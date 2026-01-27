@@ -1,0 +1,10 @@
+backend = "fast"
+color_space = "lab"
+threshold = 15
+
+[templates]
+gtk3 = true
+gtk4 = true
+kitty = true
+waybar = true
+fastfetch = true

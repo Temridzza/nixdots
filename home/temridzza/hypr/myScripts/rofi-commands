@@ -1,0 +1,51 @@
+options="edp-1 on/off
+DLNA Server
+tor
+"
+
+choice=$(echo -e "$options" | rofi -dmenu -p "Команды:")
+
+case "$choice" in
+    "edp-1 on/off")
+        ~/.config/hypr/myScripts/toggle-edp.sh
+        ;;
+    "DLNA Server")
+        dlna_options="Start\nStop\nRestart\nStatus"
+        dlna_choice=$(echo -e "$dlna_options" | rofi -dmenu -p "DLNA:")
+        case "$dlna_choice" in
+            "Start")
+                pkexec systemctl start minidlna
+                ;;
+            "Stop")
+                pkexec systemctl stop minidlna
+                ;;
+            "Restart")
+                pkexec systemctl restart minidlna
+                ;;
+            "Status")
+                kitty --class status_kitty --hold -e systemctl status minidlna
+                ;;
+        esac
+        ;;
+    "tor")
+        tor_options="Start\nStop\nRestart\nStatus\nGetBridges"
+        tor_choice=$(echo -e "$tor_options" | rofi -dmenu -p "Tor:")
+        case "$tor_choice" in
+            "Start")
+                pkexec torctl start
+                ;;
+            "Stop")
+                pkexec torctl stop
+                ;;
+            "Restart")
+                pkexec torctl restart
+                ;;
+            "Status")
+                kitty --class status_kitty --hold -e torctl status
+                ;;
+            "GetBridges")
+                kitty --class status_kitty --hold -e sudo ~/Documents/get_bridges.py
+                ;;
+        esac
+        ;;
+esac
