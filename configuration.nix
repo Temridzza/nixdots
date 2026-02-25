@@ -46,6 +46,8 @@ in
     package = inputs.hyprland.packages.${pkgs.system}.hyprland;
   };
 
+  services.udisks2.enable = true;
+
   # =========================================================
   # ♻️ Nix: автоочистка старых сборок (Garbage Collection)
   # =========================================================
@@ -72,7 +74,7 @@ in
   boot = {
     loader.systemd-boot.enable = true;      # EFI загрузчик
     loader.efi.canTouchEfiVariables = true; # Разрешить запись в EFI
-    kernelPackages = pkgs.linuxPackages_latest; # Актуальное ядро Linux
+    kernelPackages = pkgs.linuxPackages; # Актуальное ядро Linux
 
     kernelParams = [
       "snd-intel-dspcfg.dsp_driver=1" # Фикс аудио для Intel
@@ -160,10 +162,70 @@ in
     networkmanager.enable = true;       # Управление сетью
   };
 
+  # networking.firewall = {
+  #   enable = true;
+  #   allowedTCPPorts = [ 80 443 2222 ];
+  # };
+
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+    2222
+    27015
+    27036
+    27037
+    2221
+
+    # Sunshine / Moonlight
+    47984
+    47989
+    47990
+    48010
+
+    # android studio
+    42125
+    41849
+  ];
+
+  networking.firewall.allowedUDPPorts = [
+    10400
+    10401
+    27015
+    27036
+    2221
+    
+
+    # Sunshine / Moonlight
+    47998
+    47999
+    48000
+    48010
+
+    # android studio
+    42125
+    41849
+  ];
+
+  # =========================================================
+  # 🔒 waydroid
+  # =========================================================
+
+  virtualisation.waydroid.enable = true;
+
+  networking.nftables.enable = false;
+
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 80 443 2222 ];
   };
+
+  boot.kernelModules = [
+    "binder_linux"
+    "ashmem_linux"
+  ];
+
+  boot.extraModprobeConfig = ''
+    options binder_linux devices=binder,hwbinder,vndbinder
+  '';
 
 
   # =========================================================
@@ -275,6 +337,11 @@ in
     xar
     traceroute
     cava
+    udisks
+    unrar
+    zip
+    python315
+    
 
     # --- Wayland / Hyprland ---
     # hyprland    # Wayland WM
@@ -301,6 +368,9 @@ in
     waypaper
     hyprland-qt-support
     firejail
+    zapret
+    iptables
+
 
     # --- Терминал ---
     kitty       # GPU терминал
@@ -366,7 +436,6 @@ in
     ppsspp                  # PSP эмулятор
     rpcs3                   # PS3 эмулятор
     rofi
-    gitlab
     thunderbird
     geary
     obs-studio
@@ -374,6 +443,12 @@ in
     networkmanagerapplet
     gamescope
     tor-browser
+    sunshine
+    android-studio
+    filezilla
+    waydroid
+    # openvpn
+    protonvpn-gui
 
     (writeShellScriptBin "firefox-fj" ''
       mkdir -p $HOME/.firefox-fj
@@ -400,7 +475,6 @@ in
     p7zip
     cabextract
     winetricks
-    openbox
     hyprland-qtutils
 
     # --- Программирование ---
@@ -430,6 +504,16 @@ in
   #virtualisation.docker.enable = true;
   security.polkit.enable = true;
 
+  # =========================================================
+  # 📁 openvpn
+  # =========================================================
+
+  # services.openvpn.servers.myvpn = {
+  #   config = ''
+  #     config /home/temridzza/vpn/nl-free-120.protonvpn.udp.ovpn
+  #   '';
+  #   autoStart = true;
+  # };
 
   # =========================================================
   # 📁 Thunar плагины
@@ -462,11 +546,11 @@ in
       dbus
 
       # X11 — КРИТИЧНО для AWT / Swing
-      xorg.libX11
-      xorg.libXext
-      xorg.libXrender
-      xorg.libXcursor
-      xorg.libXrandr
+      libx11
+      libxext
+      libxrender
+      libxcursor
+      libxrandr
       xorg.libXinerama
       xorg.libXi
       xorg.libXtst
@@ -591,55 +675,12 @@ in
 
   # ------------------ games ------------------
   services.displayManager.enable = false;
-
-  users.users.games = {
-    isNormalUser = true;
-    shell = pkgs.bash;
-    extraGroups = [ "audio" "video" "input" "networkmanager" "bluetooth" "wheel" "render" ];
-  };
-
-  home-manager.users.games = {
-    home.stateVersion = "24.05";
-
-    home.packages = with pkgs; [
-      # X11 / Openbox
-      openbox
-      xorg.xrandr
-      gamescope
-
-      # Игровые приложения
-      steam
-      steam-run
-      ppsspp
-      rpcs3
-
-      # Vulkan / OpenGL для игр
-      mesa
-      vulkan-tools
-
-      # Launcher
-      rofi
-
-      firefox
-    ];
-
-    home.sessionVariables = {
-      WLR_RENDERER = "vulkan";
-      VK_ICD_FILENAMES = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json";
-    };
-
-    home.file.".zprofile".text = ''
-      if [ -z "$WAYLAND_DISPLAY" ] && [ -z "$DISPLAY" ]; then
-        exec ${pkgs.gamescope}/bin/gamescope -f -e -- openbox-session
-      fi
-    '';
-  };
   programs.gamemode.enable = true;
   
 
 
   services.tor = {
-    enable = true;
+      enable = true;
       torsocks.server = "127.0.0.1:9050";
 
     client = {
@@ -655,11 +696,13 @@ in
         "obfs4 exec ${pkgs.obfs4}/bin/lyrebird";
 
       Bridge = [
-        "obfs4 140.238.212.58:42069 1D5D7AD4E3BAC71D8B6E34BAC5A0BC3EEF47EB53 cert=KQKyYCBNcYGylWJlFuQIb9qYktsIwRk2bJGuvacDXy7/ny59uAsPdwRMzF3lpH+zwHFfUA iat-mode=0"
-        "obfs4 91.5.62.234:8080 3A76222696BA38823C43521FD604189A285D9859 cert=+xdVk09QmI7rY//B/hkW4PfdKyo4B7gEquHExKYfQCfWfFjkW0+bbj6NqBdoc0elJPvpKQ iat-mode=0"
-        "obfs4 51.38.220.224:30996 22494A012CFA8C88B1D907E2CCB8409AC35B537B cert=dOPijSCG6FD89fYv5N2F9QoeK1od3tpG6VBE/kMY0Bt1aW/7aXPIzsENDoLWZe43gI8efw iat-mode=0"
-        "obfs4 57.128.59.134:24102 A4AE24E2BF9CCD542A9F2794D534D13A39F2F161 cert=dX8/pc880Ne2bMEfmw75yFmsbnoZ+rWl4NDIjrei/ADZ/nHAiYTUw2HodxTIW8cWaKEkKQ iat-mode=0"
+        "obfs4 185.177.207.231:11231 662C70B65B4DCADBB622862B28BD56F4BEA22A6A cert=cEiXkalIbHiGUGp2dttVG4t5/IEbtR4Yhqc4UAd5BMJBhkSAduAblFNrcneUC2WSlD39Aw iat-mode=0"
+        "obfs4 89.163.152.166:9999 36F0C42EF75F73E403812488E42329F478365148 cert=ptF5AN1N6ogWB5ZUcG+sK0PLu1FlpwOh3ZfTTAfDB6N8fJTZ5Nx0J1KNzYcv/YG4KcZZKw iat-mode=0"
+        "obfs4 51.79.30.226:35077 6D0268328156594C41B50BF94EBD7CDCFAF985E2 cert=wQ35o1bPKT8CFmg/5C4eKmRMt4O+q6pBuflVe3vscbGS12bb4vwC5BnYepnNf0vgdDrnYQ iat-mode=0"
+        "obfs4 146.59.116.226:50845 DA91DE63966E03676A9994BDB7A18D1DCE2FAF10 cert=IAur+EwfAIbdC8jy+Mi9xlmh5ouL577Ya6ygJBEChWS8lNiEfy3hU/IAvDZ5Ntw/w2Oidg iat-mode=0"
       ];
+
+
 
       AutomapHostsOnResolve = true;
       VirtualAddrNetworkIPv4 = "10.192.0.0/10";
@@ -669,4 +712,28 @@ in
     };
   };
 
+  # =========================================================
+  # 🚀 zapret
+  # =========================================================
+
+  # services.zapret = {
+  #   enable = true;
+
+  #   params = [
+  #     # HTTPS (TCP 443)
+  #     "--wf-tcp=443"
+  #     "--dpi-desync=split2"
+  #     "--dpi-desync-ttl=1"
+  #     "--dpi-desync-autottl=2"
+
+  #     # QUIC (UDP 443)
+  #     "--wf-udp=443"
+  #     "--dpi-desync=fake"
+  #     "--dpi-desync-repeats=6"
+
+  #     # защита от близких GGC
+  #     "--dpi-desync-fooling=md5sig"
+  #   ];
+  # };
+  
 }

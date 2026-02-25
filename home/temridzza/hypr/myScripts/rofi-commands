@@ -1,6 +1,6 @@
 options="edp-1 on/off
 DLNA Server
-tor
+torctl
 "
 
 choice=$(echo -e "$options" | rofi -dmenu -p "Команды:")
