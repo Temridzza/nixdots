@@ -449,6 +449,7 @@ in
     waydroid
     # openvpn
     protonvpn-gui
+    # jetbrains.pycharm
 
     (writeShellScriptBin "firefox-fj" ''
       mkdir -p $HOME/.firefox-fj
@@ -501,6 +502,9 @@ in
     qt6.qttools
     qtcreator
   ];
+  # для ambxst
+  programs.gpu-screen-recorder.enable = true;
+
   #virtualisation.docker.enable = true;
   security.polkit.enable = true;
 
@@ -598,7 +602,8 @@ in
   # 🏠 Home Manager
   # =========================================================
   
-  home-manager.users.temridzza = { lib, ... }: {
+  home-manager.users.temridzza = { lib, pkgs, ... }: {
+       
     home.stateVersion = "24.05";
 
     # extraSpecialArgs = {
@@ -660,6 +665,7 @@ in
         nix-env       = "echo '❌ nix-env is deprecated. Use flakes + HM'";
       };
 
+
     };
 
     # =========================================================
@@ -671,6 +677,19 @@ in
         exec Hyprland
       fi
     '';
+
+     # ------------------
+    home.sessionPath = [
+      "$HOME/.local/bin"
+    ];
+
+    home.file.".local/bin/easyeffects" = {
+      executable = true;
+      text = ''
+        #!/bin/sh
+        exit 0
+      '';
+    };
   };
 
   # ------------------ games ------------------

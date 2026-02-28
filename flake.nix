@@ -9,14 +9,19 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Фиксация версии 
     hyprland = {
       url = "github:hyprwm/Hyprland/v0.52.1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    ambxst = {
+      url = "path:./Ambxst";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };   
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, ... }:
+  outputs = inputs@{ self, nixpkgs, home-manager, ambxst, ... }:
     let
       system = "x86_64-linux";
     in {
@@ -25,10 +30,11 @@
         modules = [
           ./configuration.nix
           home-manager.nixosModules.home-manager
+          inputs.ambxst.nixosModules.default
         ];
         specialArgs = {
           inherit inputs;
-        };
+        };        
       };
     };
 }
