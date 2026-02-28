@@ -505,6 +505,10 @@ in
   # для ambxst
   programs.gpu-screen-recorder.enable = true;
 
+  # симлинк для wallpaper
+  environment.etc."Ambxst/assets/wallpapers_example".source =
+    /etc/nixos/Ambxst/assets/wallpapers;
+
   #virtualisation.docker.enable = true;
   security.polkit.enable = true;
 
@@ -534,7 +538,7 @@ in
   };
 
   # =========================================================
-  # 🐚 jb и clino
+  # 🐚 jb и clion
   # =========================================================
   
   programs.nix-ld = {
