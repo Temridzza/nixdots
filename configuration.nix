@@ -671,12 +671,12 @@ in
     # =========================================================
     # 🚀 Zprofile — автозапуск Hyprland при логине
     # =========================================================
-    home.file.".zprofile".text = ''
-      # Запускать Hyprland только при логине в TTY
-      if [ -z "$WAYLAND_DISPLAY" ] && [ -z "$DISPLAY" ]; then
-        exec Hyprland
-      fi
-    '';
+    # home.file.".zprofile".text = ''
+    #   # Запускать Hyprland только при логине в TTY
+    #   if [ -z "$WAYLAND_DISPLAY" ] && [ -z "$DISPLAY" ]; then
+    #     exec Hyprland
+    #   fi
+    # '';
 
      # ------------------
     home.sessionPath = [
