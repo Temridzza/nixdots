@@ -32,13 +32,12 @@ var data = {
     },
     "ocr": {
         "eng": true,
-        "spa": true,
+        "spa": false,
         "lat": false,
         "jpn": false,
         "chi_sim": false,
         "chi_tra": false,
-        "kor": false,
-        "rus": true
+        "kor": false
     },
     "pomodoro": {
         "workTime": 1500,
