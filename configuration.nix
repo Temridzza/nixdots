@@ -656,7 +656,7 @@ in
         reload = "source ~/.zshrc";
 
         # ✅ Flake-only workflow
-        rebuild = "sudo nixos-rebuild switch --flake /etc/nixos#nixos && notify-send 'nixos' 'rebuild ready'";
+        rebuild = "/etc/nixos/rebuild-commit.sh";
         update  = "cd /etc/nixos && nix flake update && rebuild";
 
         # ❌ Блокировка legacy-путей
