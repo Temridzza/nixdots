@@ -37,7 +37,8 @@ var data = {
         "jpn": false,
         "chi_sim": false,
         "chi_tra": false,
-        "kor": false
+        "kor": false,
+        "rus": true
     },
     "pomodoro": {
         "workTime": 1500,
