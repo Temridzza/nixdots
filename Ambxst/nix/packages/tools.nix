@@ -9,7 +9,7 @@ with pkgs; [
   grim
   imagemagick
   jq
-  litellm
+  # litellm
   libnotify
   matugen
   python3
