@@ -395,7 +395,7 @@ in
     blueman     # GUI Bluetooth
 
     # --- Файлы ---
-    xfce.thunar # Файловый менеджер
+    thunar # Файловый менеджер
     xarchiver   # Архиватор
     unzip       # ZIP
     unrar       # RAR
@@ -555,12 +555,12 @@ in
       libxrender
       libxcursor
       libxrandr
-      xorg.libXinerama
-      xorg.libXi
-      xorg.libXtst
-      xorg.libXfixes
-      xorg.libXdamage
-      xorg.libXcomposite
+      libXinerama
+      libXi
+      libXtst
+      libXfixes
+      libXdamage
+      libXcomposite
 
       # графика
       libGL
