@@ -505,9 +505,6 @@ in
   # для ambxst
   programs.gpu-screen-recorder.enable = true;
 
-  #/home/temridzza/hypr
-  #
-
   #virtualisation.docker.enable = true;
   security.polkit.enable = true;
 
