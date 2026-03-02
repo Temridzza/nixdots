@@ -505,6 +505,8 @@ in
     # для bydpi
     gnumake
     gcc
+
+    #spoofdpi
   ];
   # для ambxst
   programs.gpu-screen-recorder.enable = true;
