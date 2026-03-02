@@ -459,6 +459,14 @@ in
         ${pkgs.firefox}/bin/firefox "$@"
     '')
 
+    (writeShellScriptBin "firefox-youtube" ''
+      mkdir -p $HOME/.firefox-youtube
+      exec firejail \
+        --private=$HOME/.firefox-youtube \
+        --profile=${firefoxFirejailProfile} \
+        ${pkgs.firefox}/bin/firefox "$@"
+    '')
+
     # --- Прочее ---
     wallust                 # Генерация цветовых схем
     brightnessctl           # Яркость
