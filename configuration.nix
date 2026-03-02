@@ -506,7 +506,8 @@ in
     gnumake
     gcc
 
-    #spoofdpi
+    # ещё один nodpi
+    spoofdpi
   ];
   # для ambxst
   programs.gpu-screen-recorder.enable = true;
