@@ -501,6 +501,10 @@ in
     gtest
     qt6.qttools
     qtcreator
+
+    # для bydpi
+    gnumake
+    gcc
   ];
   # для ambxst
   programs.gpu-screen-recorder.enable = true;
@@ -664,7 +668,6 @@ in
         nix-channel   = "echo '❌ nix-channel is deprecated. Use: update'";
         nix-env       = "echo '❌ nix-env is deprecated. Use flakes + HM'";
       };
-
 
     };
 
