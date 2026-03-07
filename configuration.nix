@@ -86,7 +86,7 @@ in
   # =========================================================
   # 🖥️ Графика и Wayland
   # =========================================================
-  services.xserver.enable = false; # Полный отказ от X11
+  services.xserver.enable = true;
 
   hardware.opengl = {
     enable = true;
@@ -161,11 +161,6 @@ in
     hostName = "nixos";                 # Имя хоста
     networkmanager.enable = true;       # Управление сетью
   };
-
-  # networking.firewall = {
-  #   enable = true;
-  #   allowedTCPPorts = [ 80 443 2222 ];
-  # };
 
   networking.firewall.allowedTCPPorts = [
     80
@@ -257,26 +252,45 @@ in
   # =========================================================
   # 👤 Пользователь
   # =========================================================
-  users.users.temridzza = {
-    isNormalUser = true;
-    shell = pkgs.zsh; # Основная оболочка
+  users.users = {
+    game = {
+      isNormalUser = true;
+      shell = pkgs.zsh;
+      extraGroups = [
+        "wheel"          # sudo
+        "networkmanager"# сеть
+        "audio"          # звук
+        "video"          # видео
+        "input"          # устройства ввода
+        "tty"
+        "uinput"
+        "bluetooth"
+        "docker"
+        "tor"
+      ];
+    };
 
-    extraGroups = [
-      "wheel"          # sudo
-      "networkmanager"# сеть
-      "audio"          # звук
-      "video"          # видео
-      "input"          # устройства ввода
-      "tty"
-      "uinput"
-      "bluetooth"
-      "docker"
-      "tor"
-    ];
+    temridzza = {
+      isNormalUser = true;
+      shell = pkgs.zsh; # Основная оболочка
 
-    packages = with pkgs; [
-      tree # Отображение структуры каталогов
-    ];
+      extraGroups = [
+        "wheel"          # sudo
+        "networkmanager"# сеть
+        "audio"          # звук
+        "video"          # видео
+        "input"          # устройства ввода
+        "tty"
+        "uinput"
+        "bluetooth"
+        "docker"
+        "tor"
+      ];
+
+      packages = with pkgs; [
+        tree # Отображение структуры каталогов
+      ];
+    };
   };
 
   # =========================================================
@@ -518,6 +532,10 @@ in
 
     # ещё один nodpi
     spoofdpi
+
+    # для openbox - game
+    openbox
+    xorg.xinit
   ];
   # для ambxst
   programs.gpu-screen-recorder.enable = true;
@@ -683,6 +701,8 @@ in
       };
 
     };
+
+
 
     # =========================================================
     # 🚀 Zprofile — автозапуск Hyprland при логине
