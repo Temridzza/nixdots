@@ -703,37 +703,21 @@ in
         nix-env       = "echo '❌ nix-env is deprecated. Use flakes + HM'";
       };
 
-      # =========================================================
-      # 🚀 Zprofile — автозапуск Hyprland при логине
-      # =========================================================
-      home.file.".zprofile".text = ''
-        # Запускать Hyprland только при логине в TTY
-        if [ -z "$WAYLAND_DISPLAY" ] && [ -z "$DISPLAY" ]; then
-          exec Hyprland
-        fi
-      '';
+     
 
     };
 
+    # =========================================================
+    # 🚀 Zprofile — автозапуск Hyprland при логине
+    # =========================================================
+    home.file.".zprofile".text = ''
+      # Запускать Hyprland только при логине в TTY
+      if [ -z "$WAYLAND_DISPLAY" ] && [ -z "$DISPLAY" ]; then
+        exec Hyprland
+      fi
+    '';    
 
-    home-manager.users.openbox = { pkgs, ... }: {
-      home.stateVersion = "24.05";
-
-      # =========================================================
-      # 🚀 Zprofile — автозапуск Hyprland при логине
-      # =========================================================
-      home.file.".zprofile".text = ''
-        if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
-          exec startx
-        fi
-      '';
-    };
-
-
-
-    
-
-     # ------------------
+    # ------------------
     home.sessionPath = [
       "$HOME/.local/bin"
     ];
@@ -745,6 +729,19 @@ in
         exit 0
       '';
     };
+  };
+
+  home-manager.users.game = { pkgs, ... }: {
+    home.stateVersion = "24.05";
+
+    # =========================================================
+    # 🚀 Zprofile — автозапуск Hyprland при логине
+    # =========================================================
+    home.file.".zprofile".text = ''
+      if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
+        exec openbox-session
+      fi
+    '';
   };
 
   # ------------------ games ------------------
