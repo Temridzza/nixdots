@@ -88,7 +88,10 @@ in
   # =========================================================
   services.xserver = {
     enable = true;
+
     displayManager.startx.enable = true;
+
+    desktopManager.lxqt.enable = true;
   };
 
   hardware.opengl = {
@@ -536,8 +539,8 @@ in
     # ещё один nodpi
     spoofdpi
 
-    # для openbox - game
-    openbox
+    # для LXQt
+    lxqt.lxqt-session
     xorg.xinit
   ];
   # для ambxst
@@ -739,7 +742,7 @@ in
     # =========================================================
     home.file.".zprofile".text = ''
       if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
-        exec openbox-session
+        exec startlxqt
       fi
     '';
   };
