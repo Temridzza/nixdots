@@ -86,7 +86,10 @@ in
   # =========================================================
   # 🖥️ Графика и Wayland
   # =========================================================
-  services.xserver.enable = true;
+  services.xserver = {
+    enable = true;
+    displayManager.startx.enable = true;
+  };
 
   hardware.opengl = {
     enable = true;
@@ -700,19 +703,35 @@ in
         nix-env       = "echo '❌ nix-env is deprecated. Use flakes + HM'";
       };
 
+      # =========================================================
+      # 🚀 Zprofile — автозапуск Hyprland при логине
+      # =========================================================
+      home.file.".zprofile".text = ''
+        # Запускать Hyprland только при логине в TTY
+        if [ -z "$WAYLAND_DISPLAY" ] && [ -z "$DISPLAY" ]; then
+          exec Hyprland
+        fi
+      '';
+
+    };
+
+
+    home-manager.users.openbox = { pkgs, ... }: {
+      home.stateVersion = "24.05";
+
+      # =========================================================
+      # 🚀 Zprofile — автозапуск Hyprland при логине
+      # =========================================================
+      home.file.".zprofile".text = ''
+        if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
+          exec startx
+        fi
+      '';
     };
 
 
 
-    # =========================================================
-    # 🚀 Zprofile — автозапуск Hyprland при логине
-    # =========================================================
-    home.file.".zprofile".text = ''
-      # Запускать Hyprland только при логине в TTY
-      if [ -z "$WAYLAND_DISPLAY" ] && [ -z "$DISPLAY" ]; then
-        exec Hyprland
-      fi
-    '';
+    
 
      # ------------------
     home.sessionPath = [
@@ -729,7 +748,7 @@ in
   };
 
   # ------------------ games ------------------
-  services.displayManager.enable = false;
+  # services.displayManager.enable = false;
   programs.gamemode.enable = true;
   
 
