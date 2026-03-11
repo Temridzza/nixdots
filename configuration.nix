@@ -544,6 +544,9 @@ in
     xorg.xinit
     xorg.xorgserver
     openbox
+
+    # для пар Савина
+    virtualbox
   ];
   # для ambxst
   programs.gpu-screen-recorder.enable = true;
