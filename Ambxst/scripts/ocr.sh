@@ -18,12 +18,12 @@ fi
 # Languages based on installed tesseract packages:
 # eng (English), spa (Spanish), lat (Latin), jpn (Japanese), 
 # chi_sim (Simplified Chinese), chi_tra (Traditional Chinese), kor (Korean)
-if [ -n "$1" ]; then
-    LANGS="$1"
-else
+# if [ -n "$1" ]; then
+#     LANGS="$1"
+# else
     # Default fallback if no argument provided
     LANGS="eng+rus"
-fi
+# fi  Работает
 
 # Pipe grim output to tesseract stdin (-) and output to stdout (-)
 # stderr is redirected to /dev/null to avoid noise in notification if tesseract warns

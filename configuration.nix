@@ -542,6 +542,8 @@ in
     # для LXQt
     lxqt.lxqt-session
     xorg.xinit
+    xorg.xorgserver
+    openbox
   ];
   # для ambxst
   programs.gpu-screen-recorder.enable = true;
@@ -637,6 +639,7 @@ in
   environment.sessionVariables = {
     XCURSOR_THEME = "Bibata-Original-Classic"; # Тема курсора
     XCURSOR_SIZE = "24";                       # Размер курсора
+    LXQT_WINDOW_MANAGER = "openbox";
   };
 
   # =========================================================
@@ -699,7 +702,8 @@ in
         # ✅ Flake-only workflow
         rebuild = "/etc/nixos/home/temridzza/hypr/myScripts/rebuild-commit.sh";
         update  = "cd /etc/nixos && nix flake update && rebuild";
-
+        
+        rebuild_notScript = "sudo nixos-rebuild switch --flake /etc/nixos#nixos";
         # ❌ Блокировка legacy-путей
         nixos-rebuild = "echo '❌ Use: rebuild (flake-only)'";
         nix-channel   = "echo '❌ nix-channel is deprecated. Use: update'";
@@ -738,12 +742,16 @@ in
     home.stateVersion = "24.05";
 
     # =========================================================
-    # 🚀 Zprofile — автозапуск Hyprland при логине
+    # 🚀 Zprofile — автозапуск lxqt при логине
     # =========================================================
     home.file.".zprofile".text = ''
       if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
-        exec startlxqt
+        exec startx
       fi
+    '';
+
+    home.file.".xinitrc".text = ''
+      exec startlxqt
     '';
   };
 
