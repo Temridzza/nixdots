@@ -548,6 +548,10 @@ in
     # для пар Савина
     virtualbox
   ];
+  # для virtualBox
+  virtualisation.virtualbox.host.enable = true;
+  users.extraGroups.vboxusers.members = [ "temridzza" ];
+
   # для ambxst
   programs.gpu-screen-recorder.enable = true;
 
