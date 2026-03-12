@@ -547,7 +547,7 @@ in
     openbox
 
     # виртуализация с аппартаной поддержкой
-    qemu-desktop
+    qemu
     virt-manager
     virt-viewer
     spice
