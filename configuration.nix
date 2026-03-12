@@ -291,6 +291,7 @@ in
         "bluetooth"
         "docker"
         "tor"
+        "libvirtd"
       ];
 
       packages = with pkgs; [
@@ -545,9 +546,12 @@ in
     xorg.xorgserver
     openbox
 
-    # для пар Савина
-    # virtualbox
+    # виртуализация с аппартаной поддержкой
     qemu
+    virt-manager
+    virt-viewer
+    spice
+    spice-gtk
   ];
   # для virtualBox
   # virtualisation.virtualbox.host.enable = true;
