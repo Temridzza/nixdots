@@ -552,6 +552,7 @@ in
     virt-viewer
     spice
     spice-gtk
+    cdrtools
   ];
   # для virtualBox
   # virtualisation.virtualbox.host.enable = true;
