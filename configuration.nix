@@ -546,11 +546,15 @@ in
     openbox
 
     # для пар Савина
-    virtualbox
+    # virtualbox
+    qemu
   ];
   # для virtualBox
-  virtualisation.virtualbox.host.enable = true;
-  users.extraGroups.vboxusers.members = [ "temridzza" ];
+  # virtualisation.virtualbox.host.enable = true;
+  # users.extraGroups.vboxusers.members = [ "temridzza" ];
+  # virtualisation.virtualbox.host.enableExtensionPack = true;
+  virtualisation.libvirtd.enable = true;
+  programs.virt-manager.enable = true;
 
   # для ambxst
   programs.gpu-screen-recorder.enable = true;
