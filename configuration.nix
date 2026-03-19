@@ -209,6 +209,15 @@ in
     41849
   ];
 
+  # для bydpi по всей home сети 
+  boot.kernel.sysctl = {
+    "net.ipv4.ip_forward" = 1;
+  };
+  networking.nat = {
+    enable = true;
+    externalInterface = "wlp0s20f3";
+  };
+
   # =========================================================
   # 🔒 waydroid
   # =========================================================
@@ -553,6 +562,9 @@ in
     spice
     spice-gtk
     cdrkit
+
+    # bydpi раздача
+    sing-box
   ];
   # для virtualBox
   # virtualisation.virtualbox.host.enable = true;
