@@ -190,6 +190,7 @@ in
     1080 # ByeDPI SOCKS proxy
 
     30 #sing-box
+    9050
   ];
 
   networking.firewall.allowedUDPPorts = [
@@ -211,6 +212,7 @@ in
     41849
 
     30 #sing-box
+    9050
   ];
 
   # для bydpi по всей home сети 
@@ -581,7 +583,7 @@ in
   # для ambxst
   programs.gpu-screen-recorder.enable = true;
 
-  #virtualisation.docker.enable = true;
+  virtualisation.docker.enable = true;
   security.polkit.enable = true;
 
   # =========================================================
@@ -808,13 +810,13 @@ in
       UseBridges = true;
 
       ClientTransportPlugin =
-        "obfs4 exec ${pkgs.obfs4}/bin/lyrebird";
+        "obfs4 exec ${pkgs.obfs4}/bin/obfs4proxy";
 
       Bridge = [
-        "obfs4 185.177.207.231:11231 662C70B65B4DCADBB622862B28BD56F4BEA22A6A cert=cEiXkalIbHiGUGp2dttVG4t5/IEbtR4Yhqc4UAd5BMJBhkSAduAblFNrcneUC2WSlD39Aw iat-mode=0"
-        "obfs4 89.163.152.166:9999 36F0C42EF75F73E403812488E42329F478365148 cert=ptF5AN1N6ogWB5ZUcG+sK0PLu1FlpwOh3ZfTTAfDB6N8fJTZ5Nx0J1KNzYcv/YG4KcZZKw iat-mode=0"
-        "obfs4 51.79.30.226:35077 6D0268328156594C41B50BF94EBD7CDCFAF985E2 cert=wQ35o1bPKT8CFmg/5C4eKmRMt4O+q6pBuflVe3vscbGS12bb4vwC5BnYepnNf0vgdDrnYQ iat-mode=0"
-        "obfs4 146.59.116.226:50845 DA91DE63966E03676A9994BDB7A18D1DCE2FAF10 cert=IAur+EwfAIbdC8jy+Mi9xlmh5ouL577Ya6ygJBEChWS8lNiEfy3hU/IAvDZ5Ntw/w2Oidg iat-mode=0"
+        "obfs4 92.27.11.80:8080 7250CADE439F50B0DF613AABD6B45639C61733C3 cert=1yns1O8PdlzunRvG/L52rSvox2doVNIuNzr1bDlDIZ0aRYQDWpYfCTjgLTzpjJ08+RWmKw iat-mode=2"
+        "obfs4 195.52.147.5:1677 3234D58257F100D6B5D8AB6F43176E6946EFD513 cert=JMU5ryTm6qRoSrIR6mUhfAHVsUq5eTdms6KDa/CT/ZYeRVgx6iXQW8X8Cqkrls5jlm5JeQ iat-mode=0"
+        "obfs4 57.128.57.245:3099 D655AC9C21147BB62C781149150F0E723C4F8FBC cert=fnU2eGPmE6L53eXZf/29d1JloUD2XI/4KHNImTquPr/eBvkrOuuutIlpwvJsZTV1NvZ4aw iat-mode=0"
+        "obfs4 57.128.57.245:3099 D655AC9C21147BB62C781149150F0E723C4F8FBC cert=fnU2eGPmE6L53eXZf/29d1JloUD2XI/4KHNImTquPr/eBvkrOuuutIlpwvJsZTV1NvZ4aw iat-mode=0"
       ];
 
 
