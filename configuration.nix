@@ -369,8 +369,12 @@ in
     grim
     swappy
     xdg-user-dirs
+
+    #docker
     docker
     docker-compose
+    lazydocker
+
     obfs4
     gnome-system-monitor
     xar
