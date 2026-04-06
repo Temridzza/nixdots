@@ -571,7 +571,8 @@ in
     cdrkit
 
     # bydpi раздача
-    sing-box #tun2socks
+    # sing-box #tun2socks
+    postman
   ];
   # для virtualBox
   # virtualisation.virtualbox.host.enable = true;
