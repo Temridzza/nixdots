@@ -188,6 +188,8 @@ in
     41849
 
     1080 # ByeDPI SOCKS proxy
+
+    30 #sing-box
   ];
 
   networking.firewall.allowedUDPPorts = [
@@ -207,6 +209,8 @@ in
     # android studio
     42125
     41849
+
+    30 #sing-box
   ];
 
   # для bydpi по всей home сети 
@@ -373,6 +377,7 @@ in
     unrar
     zip
     python315
+    macchanger
     
 
     # --- Wayland / Hyprland ---
@@ -564,7 +569,7 @@ in
     cdrkit
 
     # bydpi раздача
-    sing-box
+    sing-box #tun2socks
   ];
   # для virtualBox
   # virtualisation.virtualbox.host.enable = true;
