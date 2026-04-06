@@ -370,6 +370,7 @@ in
     swappy
     xdg-user-dirs
     docker
+    docker-compose
     obfs4
     gnome-system-monitor
     xar
