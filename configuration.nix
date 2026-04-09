@@ -580,6 +580,19 @@ in
     # sing-box #tun2socks
     postman
   ];
+
+  services.privoxy = {
+    enable = true;
+
+    settings = {
+      listen-address = "0.0.0.0:8118"; # чтобы PS4 могла подключиться
+    };
+
+    extraConfig = ''
+      forward-socks5 / 127.0.0.1:1080 .
+    '';
+  };
+
   # для virtualBox
   # virtualisation.virtualbox.host.enable = true;
   # users.extraGroups.vboxusers.members = [ "temridzza" ];
