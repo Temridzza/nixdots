@@ -557,6 +557,7 @@ in
     # для bydpi
     gnumake
     gcc
+    privoxy
 
     # ещё один nodpi
     spoofdpi
