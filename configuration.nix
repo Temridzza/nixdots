@@ -191,6 +191,8 @@ in
 
     30 #sing-box
     9050
+
+    8118 #privoxy
   ];
 
   networking.firewall.allowedUDPPorts = [
@@ -213,6 +215,8 @@ in
 
     30 #sing-box
     9050
+
+    8118 #privoxy
   ];
 
   # для bydpi по всей home сети 
@@ -458,6 +462,7 @@ in
     qt6Packages.qtstyleplugin-kvantum# Kvantum Qt6
     catppuccin-kvantum      # Kvantum тема
     glib                    # База GTK
+    gsettings-desktop-schemas
     liberation_ttf_v1
 
     # --- Уведомления ---
@@ -585,12 +590,10 @@ in
     enable = true;
 
     settings = {
-      listen-address = "0.0.0.0:8118"; # чтобы PS4 могла подключиться
-    };
+      listen-address = "0.0.0.0:8118";
 
-    extraConfig = ''
-      forward-socks5 / 127.0.0.1:1080 .
-    '';
+      forward-socks5 = "/ 127.0.0.1:1080 .";
+    };
   };
 
   # для virtualBox
