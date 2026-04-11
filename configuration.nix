@@ -462,7 +462,7 @@ in
     qt6Packages.qtstyleplugin-kvantum# Kvantum Qt6
     catppuccin-kvantum      # Kvantum тема
     glib                    # База GTK
-    gsettings-desktop-schemas
+    
     liberation_ttf_v1
 
     # --- Уведомления ---
@@ -583,7 +583,12 @@ in
 
     # bydpi раздача
     # sing-box #tun2socks
+
+    # для postman
     postman
+    dbus
+    gsettings-desktop-schemas
+    insomnia # альтернатива postman
   ];
 
   services.privoxy = {
@@ -831,9 +836,9 @@ in
 
     settings = {
       UseBridges = true;
+      client.enable = true;
 
-      ClientTransportPlugin =
-        "obfs4 exec ${pkgs.obfs4}/bin/obfs4proxy";
+      ClientTransportPlugin = "obfs4 exec ${pkgs.obfs4}/bin/lyrebird";
 
       Bridge = [
         "obfs4 92.27.11.80:8080 7250CADE439F50B0DF613AABD6B45639C61733C3 cert=1yns1O8PdlzunRvG/L52rSvox2doVNIuNzr1bDlDIZ0aRYQDWpYfCTjgLTzpjJ08+RWmKw iat-mode=2"
@@ -842,13 +847,11 @@ in
         "obfs4 57.128.57.245:3099 D655AC9C21147BB62C781149150F0E723C4F8FBC cert=fnU2eGPmE6L53eXZf/29d1JloUD2XI/4KHNImTquPr/eBvkrOuuutIlpwvJsZTV1NvZ4aw iat-mode=0"
       ];
 
+      # AutomapHostsOnResolve = true;
+      # VirtualAddrNetworkIPv4 = "10.192.0.0/10";
 
-
-      AutomapHostsOnResolve = true;
-      VirtualAddrNetworkIPv4 = "10.192.0.0/10";
-
-      ControlPort = 9051;
-      CookieAuthentication = true;
+      # ControlPort = 9051;
+      # CookieAuthentication = true;
     };
   };
 
