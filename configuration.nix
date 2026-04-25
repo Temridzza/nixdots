@@ -382,7 +382,6 @@ in
     obfs4
     gnome-system-monitor
     xar
-    traceroute
     cava
     udisks
     unrar
@@ -416,7 +415,6 @@ in
     waypaper
     hyprland-qt-support
     firejail
-    zapret
     iptables
 
 
@@ -497,9 +495,6 @@ in
     android-studio
     filezilla
     waydroid
-    # openvpn
-    protonvpn-gui
-    # jetbrains.pycharm
 
     (writeShellScriptBin "firefox-fj" ''
       mkdir -p $HOME/.firefox-fj
@@ -563,7 +558,6 @@ in
     # для bydpi
     gnumake
     gcc
-    privoxy
 
     # для LXQt
     lxqt.lxqt-session
@@ -584,8 +578,6 @@ in
 
     # для postman
     postman
-    dbus
-    gsettings-desktop-schemas
     insomnia # альтернатива postman
   ];
 
@@ -600,28 +592,15 @@ in
   };
 
   # для virtualBox
-  # virtualisation.virtualbox.host.enable = true;
-  # users.extraGroups.vboxusers.members = [ "temridzza" ];
-  # virtualisation.virtualbox.host.enableExtensionPack = true;
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
 
   # для ambxst
   programs.gpu-screen-recorder.enable = true;
 
-  virtualisation.docker.enable = true;
-  security.polkit.enable = true;
-
-  # =========================================================
-  # 📁 openvpn
-  # =========================================================
-
-  # services.openvpn.servers.myvpn = {
-  #   config = ''
-  #     config /home/temridzza/vpn/nl-free-120.protonvpn.udp.ovpn
-  #   '';
-  #   autoStart = true;
-  # };
+  # docker
+  # virtualisation.docker.enable = true;
+  # security.polkit.enable = true;
 
   # =========================================================
   # 📁 Thunar плагины
@@ -853,6 +832,21 @@ in
 
       # ControlPort = 9051;
       # CookieAuthentication = true;
+    };
+  };
+
+  services.minidlna = {
+    enable = true;
+    openFirewall = true;
+
+    settings = {
+      media_dir = [
+        "V,/home/temridzza/media/videos"
+        "A,/home/temridzza/Music"
+        "P,/home/temridzza/media/pictures"
+      ];
+      friendly_name = "NixOS DLNA";
+      inotify = "yes";
     };
   };
   
