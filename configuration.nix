@@ -255,7 +255,6 @@ in
   # =========================================================
   programs.firejail = {
     enable = true;
-
   };
 
 
@@ -835,6 +834,7 @@ in
     };
   };
 
+  # трансляция медиа по локальной сети
   services.minidlna = {
     enable = true;
     openFirewall = true;
@@ -848,6 +848,12 @@ in
       friendly_name = "NixOS DLNA";
       inotify = "yes";
     };
+  };
+
+  # трансляция медиа по локальной сети ++
+  services.jellyfin = {
+    enable = true;
+    openFirewall = true;
   };
   
 }
