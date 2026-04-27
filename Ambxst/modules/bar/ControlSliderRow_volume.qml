@@ -5,7 +5,6 @@ import qs.modules.theme
 import qs.modules.components
 import qs.config
 
-// A horizontal slider row with icon for use in popup controls
 Item {
     id: root
 
@@ -13,7 +12,14 @@ Item {
     signal iconClicked
 
     property string icon: ""
+
+    // 🔥 диапазон
+    property real from: 0
+    property real to: 150
+
+    // 🔥 реальное значение
     property real sliderValue: 0
+
     property color progressColor: Styling.srItem("overprimary")
     property bool wavy: false
     property real wavyAmplitude: 0.8
@@ -21,43 +27,39 @@ Item {
     property real iconRotation: 0
     property real iconScale: 1
 
-    // Internal animated properties
+    // 🔥 нормализация
+    function normalizedValue() {
+        return (sliderValue - from) / (to - from);
+    }
+
+    function valueFromPosition(mouseX) {
+        const norm = Math.max(0, Math.min(1, mouseX / sliderContainer.width));
+        return from + norm * (to - from);
+    }
+
+    // --- анимации (без изменений) ---
     property real _animatedWavyAmplitude: wavyAmplitude
     property real _animatedWavyFrequency: wavyFrequency
     property real _animatedIconRotation: iconRotation
     property real _animatedIconScale: iconScale
 
-    // Animate wavy properties
     Behavior on _animatedWavyAmplitude {
         enabled: Config.animDuration > 0
-        NumberAnimation {
-            duration: Config.animDuration
-            easing.type: Easing.OutQuart
-        }
+        NumberAnimation { duration: Config.animDuration; easing.type: Easing.OutQuart }
     }
     Behavior on _animatedWavyFrequency {
         enabled: Config.animDuration > 0
-        NumberAnimation {
-            duration: Config.animDuration
-            easing.type: Easing.OutQuart
-        }
+        NumberAnimation { duration: Config.animDuration; easing.type: Easing.OutQuart }
     }
     Behavior on _animatedIconRotation {
         enabled: Config.animDuration > 0
-        NumberAnimation {
-            duration: 400
-            easing.type: Easing.OutCubic
-        }
+        NumberAnimation { duration: 400; easing.type: Easing.OutCubic }
     }
     Behavior on _animatedIconScale {
         enabled: Config.animDuration > 0
-        NumberAnimation {
-            duration: 400
-            easing.type: Easing.OutCubic
-        }
+        NumberAnimation { duration: 400; easing.type: Easing.OutCubic }
     }
 
-    // Sync animated properties
     onWavyAmplitudeChanged: _animatedWavyAmplitude = wavyAmplitude
     onWavyFrequencyChanged: _animatedWavyFrequency = wavyFrequency
     onIconRotationChanged: _animatedIconRotation = iconRotation
@@ -70,7 +72,7 @@ Item {
         anchors.fill: parent
         spacing: 8
 
-        // Icon button
+        // --- иконка ---
         Item {
             Layout.preferredWidth: 24
             Layout.preferredHeight: 24
@@ -88,9 +90,7 @@ Item {
 
                 Behavior on color {
                     enabled: Config.animDuration > 0
-                    ColorAnimation {
-                        duration: Config.animDuration / 2
-                    }
+                    ColorAnimation { duration: Config.animDuration / 2 }
                 }
             }
 
@@ -104,24 +104,22 @@ Item {
             }
         }
 
-        // Slider
+        // --- слайдер ---
         Item {
             id: sliderContainer
             Layout.fillWidth: true
             Layout.preferredHeight: 20
             Layout.alignment: Qt.AlignVCenter
 
-            property real animatedProgress: root.sliderValue
+            // 🔥 теперь анимируется нормализованное значение
+            property real animatedProgress: root.normalizedValue()
 
             Behavior on animatedProgress {
                 enabled: Config.animDuration > 0
-                NumberAnimation {
-                    duration: Config.animDuration
-                    easing.type: Easing.OutQuart
-                }
+                NumberAnimation { duration: Config.animDuration; easing.type: Easing.OutQuart }
             }
 
-            // Background track
+            // фон
             Rectangle {
                 anchors.left: dragHandle.right
                 anchors.leftMargin: 4
@@ -132,7 +130,7 @@ Item {
                 color: Colors.surfaceBright
             }
 
-            // Progress fill (wavy or solid)
+            // прогресс
             CarouselProgress {
                 anchors.left: parent.left
                 anchors.right: dragHandle.left
@@ -145,9 +143,8 @@ Item {
                 lineWidth: 4
                 fullLength: sliderContainer.width
                 visible: root.wavy
-                active: true // Always active for now
+                active: true
                 z: 1
-                // CarouselProgress manages its own animation internally
             }
 
             Rectangle {
@@ -162,7 +159,7 @@ Item {
                 z: 1
             }
 
-            // Drag handle
+            // 🔥 ползунок
             Rectangle {
                 id: dragHandle
                 anchors.verticalCenter: parent.verticalCenter
@@ -175,23 +172,17 @@ Item {
 
                 Behavior on width {
                     enabled: Config.animDuration > 0
-                    NumberAnimation {
-                        duration: Config.animDuration
-                        easing.type: Easing.OutQuart
-                    }
+                    NumberAnimation { duration: Config.animDuration; easing.type: Easing.OutQuart }
                 }
                 Behavior on height {
                     enabled: Config.animDuration > 0
-                    NumberAnimation {
-                        duration: Config.animDuration
-                        easing.type: Easing.OutQuart
-                    }
+                    NumberAnimation { duration: Config.animDuration; easing.type: Easing.OutQuart }
                 }
             }
 
-            // Tooltip
+            // tooltip
             StyledToolTip {
-                tooltipText: `${Math.round(root.sliderValue * 100)}%`
+                tooltipText: `${Math.round(root.sliderValue)}%`
                 visible: mouseArea.pressed
                 x: dragHandle.x + dragHandle.width / 2 - width / 2
                 y: dragHandle.y - height - 5
@@ -203,29 +194,27 @@ Item {
                 cursorShape: Qt.PointingHandCursor
                 preventStealing: true
 
-                function calculateValue(mouseX: real): real {
-                    return Math.max(0, Math.min(1, mouseX / sliderContainer.width));
-                }
-
                 onPressed: mouse => {
-                    root.sliderValue = calculateValue(mouse.x);
+                    root.sliderValue = root.valueFromPosition(mouse.x);
                     root.valueChanged(root.sliderValue);
                 }
 
                 onPositionChanged: mouse => {
                     if (pressed) {
-                        root.sliderValue = calculateValue(mouse.x);
+                        root.sliderValue = root.valueFromPosition(mouse.x);
                         root.valueChanged(root.sliderValue);
                     }
                 }
 
                 onWheel: wheel => {
-                    const step = 0.05;
+                    const step = 5;
+
                     if (wheel.angleDelta.y > 0) {
-                        root.sliderValue = Math.min(1, root.sliderValue + step);
+                        root.sliderValue = Math.min(root.to, root.sliderValue + step);
                     } else {
-                        root.sliderValue = Math.max(0, root.sliderValue - step);
+                        root.sliderValue = Math.max(root.from, root.sliderValue - step);
                     }
+
                     root.valueChanged(root.sliderValue);
                 }
             }

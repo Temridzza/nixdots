@@ -91,7 +91,7 @@ Item {
             spacing: 12
 
             // Volume Slider
-            ControlSliderRow {
+            ControlSliderRow_volume {
                 id: volumeRow
                 Layout.fillWidth: true
                 Layout.preferredHeight: 36
@@ -109,15 +109,15 @@ Item {
                         return Icons.speakerLow;
                     return Icons.speakerHigh;
                 }
-                sliderValue: Audio.sink?.audio?.volume ?? 0
+                sliderValue: (Audio.sink?.audio?.volume ?? 0) * 100
                 progressColor: Audio.sink?.audio?.muted ? Colors.outline : Styling.srItem("overprimary")
                 wavy: true
-                wavyAmplitude: Audio.sink?.audio?.muted ? 0.5 : 1.5 * sliderValue
-                wavyFrequency: Audio.sink?.audio?.muted ? 1.0 : 8.0 * sliderValue
+                wavyAmplitude: Audio.sink?.audio?.muted ? 0.5 : 1.5 * ormalizedValue()
+                wavyFrequency: Audio.sink?.audio?.muted ? 1.0 : 8.0 * ormalizedValue()
 
                 onValueChanged: newValue => {
                     if (Audio.sink?.audio) {
-                        Audio.sink.audio.volume = newValue;
+                        Audio.sink.audio.volume = newValue / 100;
                     }
                 }
 
@@ -132,7 +132,7 @@ Item {
                     ignoreUnknownSignals: true
                     function onVolumeChanged() {
                         if (Audio.sink?.audio) {
-                            volumeRow.sliderValue = Audio.sink.audio.volume;
+                            volumeRow.sliderValue = Audio.sink.audio.volume * 100;
                         }
                     }
                 }
@@ -146,7 +146,7 @@ Item {
                 Layout.rightMargin: 8
 
                 icon: Audio.source?.audio?.muted ? Icons.micSlash : Icons.mic
-                sliderValue: Audio.source?.audio?.volume ?? 0
+                sliderValue: (Audio.source?.audio?.volume ?? 0)
                 progressColor: Audio.source?.audio?.muted ? Colors.outline : Styling.srItem("overprimary")
                 wavy: true
                 wavyAmplitude: Audio.source?.audio?.muted ? 0.5 : 1.5 * sliderValue
@@ -169,7 +169,7 @@ Item {
                     ignoreUnknownSignals: true
                     function onVolumeChanged() {
                         if (Audio.source?.audio) {
-                            micRow.sliderValue = Audio.source.audio.volume;
+                            volumeRow.sliderValue = Audio.sink.audio.volume;
                         }
                     }
                 }
@@ -185,7 +185,7 @@ Item {
                 property var currentMonitor: Brightness.getMonitorForScreen(root.bar.screen)
 
                 icon: Icons.sun
-                sliderValue: currentMonitor?.brightness ?? 0.5
+                sliderValue: (currentMonitor?.brightness ?? 0.5) * 100
                 progressColor: Styling.srItem("overprimary")
                 wavy: true
                 wavyAmplitude: 1.5 * sliderValue
@@ -198,7 +198,7 @@ Item {
                         for (let i = 0; i < Brightness.monitors.length; i++) {
                             let mon = Brightness.monitors[i];
                             if (mon && mon.ready) {
-                                mon.setBrightness(newValue);
+                                mon.setBrightness(newValue / 100);
                             }
                         }
                     } else if (currentMonitor && currentMonitor.ready) {
