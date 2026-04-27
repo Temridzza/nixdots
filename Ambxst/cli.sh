@@ -156,6 +156,9 @@ run)
 		exit 1
 	}
 	;;
+myscript)
+    bash "/etc/nixos/home/temridzza/hypr/UserScripts/RainbowBorders.sh"
+    ;;
 lock)
 	PID=$(find_ambxst_pid_cached)
 	if [ -z "$PID" ]; then

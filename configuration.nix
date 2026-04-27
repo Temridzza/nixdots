@@ -310,13 +310,31 @@ in
         "docker"
         "tor"
         "libvirtd"
+        "media"
+        
       ];
 
       packages = with pkgs; [
         tree # Отображение структуры каталогов
       ];
     };
+
+    jellyfin = {
+      extraGroups = [ "media" "users" ];
+    };
+
+    # minidlna.extraGroups = [ "media" ];
   };
+
+  users.groups.media = {};
+
+  systemd.tmpfiles.rules = [
+    # доступ к домашней папке (чтобы можно было "зайти")
+    "d /home/temridzza 0711 temridzza users - -"
+
+    # папка с медиа
+    "d /home/temridzza/Movies 0750 temridzza media - -"
+  ];
 
   # =========================================================
   # 🖋️ Шрифты
@@ -398,7 +416,7 @@ in
     waybar      # Панель
     hyprprop    # Инспектор окон
     swaybg      # Обои
-    swww        # Анимированные обои
+    # swww        # Анимированные обои
     mpvpaper    # Видео-обои
     wlogout     # Меню выхода
     hypridle
@@ -425,7 +443,8 @@ in
     vulkan-tools# Vulkan диагностика
     ffmpeg      # Работа с видео/аудио
     imagemagick # Работа с изображениями
-    mpv         # Видеоплеер
+    mpv         # медиаплеер
+    mpvScripts.mpris  # MPRIS скрипт для mpv
     obs-studio  # Запись экрана
 
     # --- Звук ---
@@ -465,7 +484,7 @@ in
     # --- Уведомления ---
     libnotify               # Backend уведомлений
     notify notify-client    # CLI уведомления
-    swaynotificationcenter  # Notification center
+    # swaynotificationcenter  # Notification center
 
     # --- Пользовательские приложения ---
     firefox                 # Браузер
@@ -476,25 +495,18 @@ in
     onlyoffice-desktopeditors # Офис
     vscode                  # Редактор кода
     jetbrains-toolbox       # JetBrains IDE
-    drawio                  # Диаграммы
-    heroic                  # Epic/GOG launcher
-    steam                   # Игры + Proton
-    ppsspp                  # PSP эмулятор
-    rpcs3                   # PS3 эмулятор
+    steam
     ncdu                    # просмотр диска
-    rofi
-    thunderbird
-    geary
-    obs-studio
-    libreoffice
+    rofi                    # менеджер приложений
+    obs-studio              # запись
     networkmanagerapplet
-    gamescope
-    tor-browser
-    sunshine
-    android-studio
-    filezilla
-    waydroid
+    gamescope               # steam оболочка
+    sunshine                # подключение vita
+    android-studio          # разработка андроид приложений
+    filezilla               # передача по ftp
+    waydroid                # эмулятор андроид
 
+    # изолированные браузеры firefox
     (writeShellScriptBin "firefox-fj" ''
       mkdir -p $HOME/.firefox-fj
       exec firejail \
@@ -517,8 +529,8 @@ in
     yad                     # GUI диалоги из shell
     polkit                  # Управление правами
     kdePackages.polkit-kde-agent-1
-    tor
-    torsocks
+    tor                     # обход блокирвок
+    torsocks                # прокидывание трафика через tor
     openssl
     ags
 
@@ -560,8 +572,8 @@ in
 
     # для LXQt
     lxqt.lxqt-session
-    xorg.xinit
-    xorg.xorgserver
+    xinit
+    xorgserver
     openbox
 
     # виртуализация с аппартаной поддержкой
@@ -571,13 +583,11 @@ in
     spice
     spice-gtk
     cdrkit
-
-    # bydpi раздача
-    # sing-box #tun2socks
-
-    # для postman
-    postman
+    
     insomnia # альтернатива postman
+
+    privoxy  # перенаправление socks5 в http прокси для игр с поддержкой только http прокси (например, steam)
+    socat    # сокеты для mpvpaper
   ];
 
   services.privoxy = {
@@ -586,7 +596,7 @@ in
     settings = {
       listen-address = "0.0.0.0:8118";
 
-      forward-socks5 = "/ 127.0.0.1:1080 .";
+      forward-socks5 = "/ 127.0.0.1:9050 .";
     };
   };
 
@@ -740,6 +750,7 @@ in
 
         # ✅ Flake-only workflow
         rebuild = "/etc/nixos/home/temridzza/hypr/myScripts/rebuild-commit.sh";
+        rebuild- = "sudo nixos-rebuild switch --flake /etc/nixos#nixos";
         update  = "cd /etc/nixos && nix flake update && rebuild";
         
         rebuild_notScript = "sudo nixos-rebuild switch --flake /etc/nixos#nixos";
@@ -748,8 +759,6 @@ in
         nix-channel   = "echo '❌ nix-channel is deprecated. Use: update'";
         nix-env       = "echo '❌ nix-env is deprecated. Use flakes + HM'";
       };
-
-     
 
     };
 
@@ -774,6 +783,13 @@ in
         #!/bin/sh
         exit 0
       '';
+    };
+
+    programs.mpv = {
+      enable = true;
+      scripts = [
+        pkgs.mpvScripts.mpris
+      ];
     };
   };
 
@@ -831,22 +847,6 @@ in
 
       # ControlPort = 9051;
       # CookieAuthentication = true;
-    };
-  };
-
-  # трансляция медиа по локальной сети
-  services.minidlna = {
-    enable = true;
-    openFirewall = true;
-
-    settings = {
-      media_dir = [
-        "V,/home/temridzza/media/videos"
-        "A,/home/temridzza/Music"
-        "P,/home/temridzza/media/pictures"
-      ];
-      friendly_name = "NixOS DLNA";
-      inotify = "yes";
     };
   };
 

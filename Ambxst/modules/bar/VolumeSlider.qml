@@ -88,9 +88,9 @@ Item {
             onWheel: wheel => {
                 if (root.isExpanded) {
                     if (wheel.angleDelta.y > 0) {
-                        volumeSlider.value = Math.min(1, volumeSlider.value + 0.1);
-                    } else {
                         volumeSlider.value = Math.max(0, volumeSlider.value - 0.1);
+                    } else {
+                        volumeSlider.value = Math.min(1.5, volumeSlider.value + 0.1);
                     }
                 }
             }
@@ -98,6 +98,8 @@ Item {
 
         StyledSlider {
             id: volumeSlider
+            from: 0
+            to: 1.5
             anchors.fill: parent
             anchors.margins: 8
             anchors.rightMargin: root.vertical ? 8 : 16
