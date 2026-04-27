@@ -157,7 +157,7 @@ run)
 	}
 	;;
 myscript)
-    bash "/etc/nixos/home/temridzza/hypr/UserScripts/RainbowBorders.sh"
+    # bash "/etc/nixos/home/temridzza/hypr/UserScripts/RainbowBorders.sh"
     ;;
 lock)
 	PID=$(find_ambxst_pid_cached)

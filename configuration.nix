@@ -559,6 +559,7 @@ in
     libsForQt5.qtconnectivity
 
     qt5.qtmultimedia
+    qt6.qtmultimedia
     qt5.qtconnectivity
 
     curl
