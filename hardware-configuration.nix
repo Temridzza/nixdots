@@ -24,7 +24,7 @@
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
-  fileSystems."/mnt/arch" =
+  fileSystems."/mnt/steam_games" =
     { device = "/dev/nvme0n1p5";
       fsType = "ext4";
     };

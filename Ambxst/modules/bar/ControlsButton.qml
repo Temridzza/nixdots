@@ -112,8 +112,8 @@ Item {
                 sliderValue: (Audio.sink?.audio?.volume ?? 0) * 100
                 progressColor: Audio.sink?.audio?.muted ? Colors.outline : Styling.srItem("overprimary")
                 wavy: true
-                wavyAmplitude: Audio.sink?.audio?.muted ? 0.5 : 1.5 * ormalizedValue()
-                wavyFrequency: Audio.sink?.audio?.muted ? 1.0 : 8.0 * ormalizedValue()
+                wavyAmplitude: Audio.sink?.audio?.muted ? 0.5 : 1 * normalizedValue()
+                wavyFrequency: Audio.sink?.audio?.muted ? 1.0 : 8.0 * normalizedValue()
 
                 onValueChanged: newValue => {
                     if (Audio.sink?.audio) {
@@ -127,34 +127,34 @@ Item {
                     }
                 }
 
-                Connections {
-                    target: Audio.sink?.audio ?? null
-                    ignoreUnknownSignals: true
-                    function onVolumeChanged() {
-                        if (Audio.sink?.audio) {
-                            volumeRow.sliderValue = Audio.sink.audio.volume * 100;
-                        }
-                    }
-                }
+                // Connections {
+                //     target: Audio.sink?.audio ?? null
+                //     ignoreUnknownSignals: true
+                //     function onVolumeChanged() {
+                //         if (Audio.sink?.audio) {
+                //             volumeRow.sliderValue = Audio.sink.audio.volume * 100;
+                //         }
+                //     }
+                // }
             }
 
             // Microphone Slider
-            ControlSliderRow {
+            ControlSliderRow_volume {
                 id: micRow
                 Layout.fillWidth: true
                 Layout.preferredHeight: 36
                 Layout.rightMargin: 8
 
                 icon: Audio.source?.audio?.muted ? Icons.micSlash : Icons.mic
-                sliderValue: (Audio.source?.audio?.volume ?? 0)
+                sliderValue: (Audio.sink?.audio?.volume ?? 0) * 100
                 progressColor: Audio.source?.audio?.muted ? Colors.outline : Styling.srItem("overprimary")
                 wavy: true
-                wavyAmplitude: Audio.source?.audio?.muted ? 0.5 : 1.5 * sliderValue
-                wavyFrequency: Audio.source?.audio?.muted ? 1.0 : 8.0 * sliderValue
+                wavyAmplitude: Audio.source?.audio?.muted ? 0.5 : 1.5 * normalizedValue()
+                wavyFrequency: Audio.source?.audio?.muted ? 1.0 : 8.0 * normalizedValue()
 
                 onValueChanged: newValue => {
                     if (Audio.source?.audio) {
-                        Audio.source.audio.volume = newValue;
+                        Audio.source.audio.volume = newValue / 100;
                     }
                 }
 
@@ -164,15 +164,15 @@ Item {
                     }
                 }
 
-                Connections {
-                    target: Audio.source?.audio ?? null
-                    ignoreUnknownSignals: true
-                    function onVolumeChanged() {
-                        if (Audio.source?.audio) {
-                            volumeRow.sliderValue = Audio.sink.audio.volume;
-                        }
-                    }
-                }
+                // Connections {
+                //     target: Audio.source?.audio ?? null
+                //     ignoreUnknownSignals: true
+                //     function onVolumeChanged() {
+                //         if (Audio.source?.audio) {
+                //             micRow.sliderValue = Audio.source.audio.volume;
+                //         }
+                //     }
+                // }
             }
 
             // Brightness Slider
