@@ -127,15 +127,15 @@ Item {
                     }
                 }
 
-                // Connections {
-                //     target: Audio.sink?.audio ?? null
-                //     ignoreUnknownSignals: true
-                //     function onVolumeChanged() {
-                //         if (Audio.sink?.audio) {
-                //             volumeRow.sliderValue = Audio.sink.audio.volume * 100;
-                //         }
-                //     }
-                // }
+                Connections {
+                    target: Audio.sink?.audio ?? null
+                    ignoreUnknownSignals: true
+                    function onVolumeChanged() {
+                        if (Audio.sink?.audio) {
+                            volumeRow.sliderValue = Audio.sink.audio.volume * 100;
+                        }
+                    }
+                }
             }
 
             // Microphone Slider
@@ -149,7 +149,7 @@ Item {
                 sliderValue: (Audio.sink?.audio?.volume ?? 0) * 100
                 progressColor: Audio.source?.audio?.muted ? Colors.outline : Styling.srItem("overprimary")
                 wavy: true
-                wavyAmplitude: Audio.source?.audio?.muted ? 0.5 : 1.5 * normalizedValue()
+                wavyAmplitude: Audio.source?.audio?.muted ? 0.5 : 1 * normalizedValue()
                 wavyFrequency: Audio.source?.audio?.muted ? 1.0 : 8.0 * normalizedValue()
 
                 onValueChanged: newValue => {
@@ -164,15 +164,15 @@ Item {
                     }
                 }
 
-                // Connections {
-                //     target: Audio.source?.audio ?? null
-                //     ignoreUnknownSignals: true
-                //     function onVolumeChanged() {
-                //         if (Audio.source?.audio) {
-                //             micRow.sliderValue = Audio.source.audio.volume;
-                //         }
-                //     }
-                // }
+                Connections {
+                    target: Audio.source?.audio ?? null
+                    ignoreUnknownSignals: true
+                    function onVolumeChanged() {
+                        if (Audio.source?.audio) {
+                            micRow.sliderValue = Audio.source.audio.volume * 100;
+                        }
+                    }
+                }
             }
 
             // Brightness Slider

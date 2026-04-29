@@ -289,7 +289,7 @@ in
         "tty"
         "uinput"
         "bluetooth"
-        "docker"
+        # "docker"
         "tor"
       ];
     };
@@ -307,11 +307,10 @@ in
         "tty"
         "uinput"
         "bluetooth"
-        "docker"
+        # "docker"
         "tor"
         "libvirtd"
-        "media"
-        
+        "media"        
       ];
 
       packages = with pkgs; [
@@ -391,10 +390,10 @@ in
     swappy
     xdg-user-dirs
 
-    #docker
-    docker
-    docker-compose
-    lazydocker
+    # docker
+    # docker
+    # docker-compose
+    # lazydocker
 
     obfs4
     gnome-system-monitor
@@ -515,14 +514,6 @@ in
         ${pkgs.firefox}/bin/firefox "$@"
     '')
 
-    (writeShellScriptBin "firefox-youtube" ''
-      mkdir -p $HOME/.firefox-youtube
-      exec firejail \
-        --private=$HOME/.firefox-youtube \
-        --profile=${firefoxFirejailProfile} \
-        ${pkgs.firefox}/bin/firefox "$@"
-    '')
-
     # --- Прочее ---
     wallust                 # Генерация цветовых схем
     brightnessctl           # Яркость
@@ -591,19 +582,19 @@ in
     socat    # сокеты для mpvpaper
   ];
 
-  services.privoxy = {
-    enable = true;
+  # services.privoxy = {
+  #   enable = true;
 
-    settings = {
-      listen-address = "0.0.0.0:8118";
+  #   settings = {
+  #     listen-address = "0.0.0.0:8118";
 
-      forward-socks5 = "/ 127.0.0.1:9050 .";
-    };
-  };
+  #     forward-socks5 = "/ 127.0.0.1:9050 .";
+  #   };
+  # };
 
   # для virtualBox
-  virtualisation.libvirtd.enable = true;
-  programs.virt-manager.enable = true;
+  # virtualisation.libvirtd.enable = true;
+  # programs.virt-manager.enable = true;
 
   # для ambxst
   programs.gpu-screen-recorder.enable = true;
@@ -722,7 +713,7 @@ in
       "wlogout".source = ./home/temridzza/config/wlogout;
       "btop".source = ./home/temridzza/config/btop;
       "fastfetch".source = ./home/temridzza/config/fastfetch;
-      "swaync".source = ./home/temridzza/config/swaync;
+      # "swaync".source = ./home/temridzza/config/swaync;
       "swappy".source = ./home/temridzza/config/swappy;
     };
 
@@ -734,7 +725,7 @@ in
         plugins = [ "git" "sudo" "extract" ];
       };
 
-      # === ПЛАГИНЫ (аналог zsh-autosuggestions и т.д.) ===
+      # === ПЛАГИНЫ ===
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
       historySubstringSearch.enable = true;
@@ -753,8 +744,7 @@ in
         rebuild = "/etc/nixos/home/temridzza/hypr/myScripts/rebuild-commit.sh";
         rebuild- = "sudo nixos-rebuild switch --flake /etc/nixos#nixos";
         update  = "cd /etc/nixos && nix flake update && rebuild";
-        
-        rebuild_notScript = "sudo nixos-rebuild switch --flake /etc/nixos#nixos";
+
         # ❌ Блокировка legacy-путей
         nixos-rebuild = "echo '❌ Use: rebuild (flake-only)'";
         nix-channel   = "echo '❌ nix-channel is deprecated. Use: update'";
