@@ -335,6 +335,36 @@ in
     "d /home/temridzza/Movies 0750 temridzza media - -"
   ];
 
+  security.sudo.extraRules = [
+    {
+      users = [ "temridzza" ];
+      commands = [
+        {
+          command = "/run/current-system/sw/bin/systemctl start tor";
+          options = [ "NOPASSWD" ];
+        }
+        {
+          command = "/run/current-system/sw/bin/systemctl stop tor";
+          options = [ "NOPASSWD" ];
+        }
+        {
+          command = "/run/current-system/sw/bin/systemctl restart tor";
+          options = [ "NOPASSWD" ];
+        }
+      ];
+    }
+  ];
+
+  security.polkit.extraConfig = ''
+    polkit.addRule(function(action, subject) {
+        if (action.id == "org.freedesktop.systemd1.manage-units") {
+            if (subject.user == "temridzza") {
+                return polkit.Result.YES;
+            }
+        }
+    });
+  '';
+
   # =========================================================
   # 🖋️ Шрифты
   # =========================================================
@@ -483,7 +513,6 @@ in
     # --- Уведомления ---
     libnotify               # Backend уведомлений
     notify notify-client    # CLI уведомления
-    # swaynotificationcenter  # Notification center
 
     # --- Пользовательские приложения ---
     firefox                 # Браузер
@@ -499,7 +528,10 @@ in
     rofi                    # менеджер приложений
     obs-studio              # запись
     networkmanagerapplet
+
+    steam
     gamescope               # steam оболочка
+
     sunshine                # подключение vita
     android-studio          # разработка андроид приложений
     filezilla               # передача по ftp
@@ -520,10 +552,15 @@ in
     yad                     # GUI диалоги из shell
     polkit                  # Управление правами
     kdePackages.polkit-kde-agent-1
+
     tor                     # обход блокирвок
     torsocks                # прокидывание трафика через tor
+
     openssl
     ags
+
+    opensnitch              #управление трафиком
+    opensnitch-ui
 
     steam-run
     wget
@@ -552,7 +589,8 @@ in
     qt5.qtmultimedia
     qt6.qtmultimedia
     qt5.qtconnectivity
-
+    qt6.qtdeclarative
+    
     curl
     gtest
     qt6.qttools

@@ -333,14 +333,14 @@ Rectangle {
                         return Icons.speakerLow;
                     return Icons.speakerHigh;
                 }
-                value: Audio.sink?.audio?.volume ?? 0
+                value: (Audio.sink?.audio?.volume ?? 0) * 100
                 accentColor: Audio.sink?.audio?.muted ? Colors.outline : Styling.srItem("overprimary")
                 isToggleable: true
                 isToggled: !(Audio.sink?.audio?.muted ?? false)
 
                 onControlValueChanged: newValue => {
-                    if (Audio.sink?.audio) {
-                        Audio.sink.audio.volume = newValue;
+                    if (Audio.sink?.audio) { 
+                        Audio.sink.audio.volume = newValue / 100;
                     }
                 }
 
@@ -361,14 +361,14 @@ Rectangle {
                 Layout.preferredWidth: 48
                 Layout.preferredHeight: 48
                 icon: Audio.source?.audio?.muted ? Icons.micSlash : Icons.mic
-                value: Audio.source?.audio?.volume ?? 0
+                value: (Audio.source?.audio?.volume ?? 0) * 100
                 accentColor: Audio.source?.audio?.muted ? Colors.outline : Styling.srItem("overprimary")
                 isToggleable: true
                 isToggled: !(Audio.source?.audio?.muted ?? false)
 
                 onControlValueChanged: newValue => {
                     if (Audio.source?.audio) {
-                        Audio.source.audio.volume = newValue;
+                        Audio.source.audio.volume = newValue / 100;
                     }
                 }
 

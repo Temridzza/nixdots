@@ -171,7 +171,6 @@ Button {
     onClicked: {
         if (isSeparator)
             return;
-
         if (appToplevel.toplevelCount === 0) {
             // Launch the app
             if (desktopEntry) {
@@ -193,7 +192,6 @@ Button {
         onClicked: mouse => {
             if (root.isSeparator)
                 return;
-
             if (mouse.button === Qt.MiddleButton) {
                 // Launch new instance
                 if (root.desktopEntry) {

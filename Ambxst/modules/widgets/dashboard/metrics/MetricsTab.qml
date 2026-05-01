@@ -22,15 +22,12 @@ Rectangle {
     property var linuxLogos: null
     property real chartZoom: 1.0
 
-    // Adjust history points based on zoom and repaint chart
-    onChartZoomChanged: {
-        // Store enough history to support zoom out
-        // Always store maximum (250 points) to allow smooth zooming
-        SystemResources.maxHistoryPoints = 250;
+    property var services: [
+        { name: "tor.service", label: "tor" },
+    ]
+    property int serviceIndex: 0
 
-        // Repaint chart when zoom changes
-        chartCanvas.requestPaint();
-    }
+    property var serviceStates: ({})
 
     // Function to get OS icon based on name
     function getOsIcon(osName) {
@@ -52,6 +49,13 @@ Rectangle {
 
         // Default to generic Linux icon
         return linuxLogos["Linux"] || "";
+    }
+
+    function getServiceState(name) {
+        if (!root.serviceStates)
+            return "unknown";
+
+        return root.serviceStates[name] || "unknown11";
     }
 
     // Update OS icon when logos are loaded
@@ -76,6 +80,32 @@ Rectangle {
         hostnameReader.running = true;
         osReader.running = true;
         linuxLogosReader.running = true;
+
+        refreshServices();
+    }
+
+    Timer {
+        interval: 3000
+        running: true
+        repeat: true
+        onTriggered: refreshServices()
+    }
+
+    Process {
+        id: serviceRunner
+        running: false
+
+        function run(service, action) {
+            command = ["/run/current-system/sw/bin/systemctl", action, service];
+            running = true;
+        }
+    }
+
+    function runService(name, action) {
+        serviceRunner.run(name, action);
+
+        // чуть позже обновим статус
+        Qt.callLater(() => refreshServices());
     }
 
     // Load Linux logos JSON
@@ -141,19 +171,44 @@ Rectangle {
         }
     }
 
-    // Update chart when becoming visible
-    onVisibleChanged: {
-        if (visible)
-            chartCanvas.requestPaint();
+     Process {
+        id: serviceStatusReader
+        running: false
+
+        property string currentService: ""
+
+        function check(serviceName) {
+            currentService = serviceName;
+            command = ["systemctl", "is-active", serviceName];
+            running = true;
+        }
+
+        stdout: StdioCollector {
+            waitForEnd: true
+            onStreamFinished: {
+                const state = text.trim();
+
+                root.serviceStates[serviceStatusReader.currentService] = state;
+                root.serviceStates = Object.assign({}, root.serviceStates);
+                // 🔥 ВАЖНО: продолжаем очередь
+                root.serviceIndex++;
+                root.checkNextService();
+            }
+        }
+    }
+    
+
+    function refreshServices() {
+        serviceIndex = 0;
+        checkNextService();
     }
 
-    // Watch for history changes to repaint chart
-    Connections {
-        target: SystemResources
-        function onCpuHistoryChanged() {
-            if (root.visible)
-                chartCanvas.requestPaint();
-        }
+    function checkNextService() {
+        if (serviceIndex >= services.length)
+            return;
+
+        const s = services[serviceIndex];
+        serviceStatusReader.check(s.name);
     }
 
     RowLayout {
@@ -626,7 +681,9 @@ Rectangle {
             }
         }
 
-        // Right panel - Chart
+       
+
+        // Right panel - Control Center
         ColumnLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -635,347 +692,73 @@ Rectangle {
             StyledRect {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                radius: Styling.radius(4)
                 variant: "pane"
 
-                StyledRect {
+                Flickable {
                     anchors.fill: parent
-                    anchors.margins: 4
-                    radius: Styling.radius(0)
-                    variant: "internalbg"
+                    contentHeight: list.height
 
-                    // Chart area
-                    Canvas {
-                        id: chartCanvas
-                        anchors.fill: parent
-
-                        onPaint: {
-                            const ctx = getContext("2d");
-                            const w = width;
-                            const h = height;
-
-                            // Clear canvas
-                            ctx.clearRect(0, 0, w, h);
-
-                            if (SystemResources.cpuHistory.length < 2)
-                                return;
-
-                            // === COORDINATE SYSTEM SETUP ===
-                            // Apply zoom to visible points
-                            const basePoints = 50;
-                            const zoomedMaxPoints = Math.max(10, Math.floor(basePoints / root.chartZoom));
-
-                            // Core spacing: each data point gets this many pixels
-                            const pointSpacing = w / (zoomedMaxPoints - 1);
-
-                            // Calculate offset to align graph to the right
-                            const actualPoints = Math.min(zoomedMaxPoints, SystemResources.cpuHistory.length);
-                            const graphOffset = w - ((actualPoints - 1) * pointSpacing);
-
-                            // === GRID RENDERING ===
-                            // Grid now uses the SAME coordinate system as the data
-                            ctx.strokeStyle = Colors.surface;
-                            ctx.lineWidth = 1;
-
-                            // Horizontal grid lines (percentage-based, fixed at 8 divisions)
-                            for (let i = 1; i < 8; i++) {
-                                const y = h * (i / 8);
-                                ctx.beginPath();
-                                ctx.moveTo(0, y);
-                                ctx.lineTo(w, y);
-                                ctx.stroke();
-                            }
-
-                            // Vertical grid lines every 10 points
-                            ctx.strokeStyle = Colors.surface;
-                            ctx.lineWidth = 2;
-
-                            // Use the absolute data point counter for infinite scrolling
-                            const totalDataPoints = SystemResources.totalDataPoints;
-
-                            // Calculate where the visible window starts in absolute terms
-                            const windowStartIndex = totalDataPoints - actualPoints;
-
-                            // Find the first grid line (multiple of 10) that should appear
-                            const firstGridLine = Math.floor(windowStartIndex / 10) * 10;
-
-                            // Draw vertical lines every 10 data points
-                            // Continue until we pass the right edge of the canvas
-                            for (let absoluteIndex = firstGridLine; absoluteIndex <= totalDataPoints + 10; absoluteIndex += 10) {
-                                // Convert absolute index to position within visible window
-                                const visibleIndex = absoluteIndex - windowStartIndex;
-
-                                // Only draw if within visible range
-                                if (visibleIndex >= 0 && visibleIndex < actualPoints) {
-                                    const x = graphOffset + (visibleIndex * pointSpacing);
-                                    ctx.beginPath();
-                                    ctx.moveTo(x, 0);
-                                    ctx.lineTo(x, h);
-                                    ctx.stroke();
-                                }
-                            }
-
-                            // === DATA RENDERING ===
-                            // Helper function to draw a line chart with gradient fill
-                            function drawLine(history, color) {
-                                if (history.length < 2)
-                                    return;
-
-                                // Get most recent data points based on zoom level
-                                const visiblePoints = Math.min(zoomedMaxPoints, history.length);
-                                const recentHistory = history.slice(-visiblePoints);
-
-                                // Use same offset as grid for perfect alignment
-                                const dataOffset = graphOffset;
-
-                                // Create gradient from top to bottom
-                                const gradient = ctx.createLinearGradient(0, 0, 0, h);
-                                gradient.addColorStop(0, Qt.rgba(color.r, color.g, color.b, 0.4));
-                                gradient.addColorStop(0.5, Qt.rgba(color.r, color.g, color.b, 0.2));
-                                gradient.addColorStop(1, Qt.rgba(color.r, color.g, color.b, 0.0));
-
-                                // Draw filled area
-                                ctx.fillStyle = gradient;
-                                ctx.beginPath();
-
-                                // Start from bottom at first point position
-                                const firstX = dataOffset;
-                                ctx.moveTo(firstX, h);
-
-                                // Draw line to first data point
-                                const firstY = h - (recentHistory[0] * h);
-                                ctx.lineTo(firstX, firstY);
-
-                                // Draw through all data points
-                                for (let i = 1; i < recentHistory.length; i++) {
-                                    const x = dataOffset + (i * pointSpacing);
-                                    const y = h - (recentHistory[i] * h);
-                                    ctx.lineTo(x, y);
-                                }
-
-                                // Close path along bottom
-                                const lastX = dataOffset + ((recentHistory.length - 1) * pointSpacing);
-                                ctx.lineTo(lastX, h);
-                                ctx.closePath();
-                                ctx.fill();
-
-                                // Draw the line on top
-                                ctx.strokeStyle = color;
-                                ctx.lineWidth = 2;
-                                ctx.lineCap = "round";
-                                ctx.lineJoin = "round";
-                                ctx.beginPath();
-
-                                for (let i = 0; i < recentHistory.length; i++) {
-                                    const x = dataOffset + (i * pointSpacing);
-                                    const y = h - (recentHistory[i] * h);
-
-                                    if (i === 0) {
-                                        ctx.moveTo(x, y);
-                                    } else {
-                                        ctx.lineTo(x, y);
-                                    }
-                                }
-
-                                ctx.stroke();
-                            }
-
-                            // Draw CPU line (red)
-                            drawLine(SystemResources.cpuHistory, Colors.red);
-
-                            // Draw RAM line (cyan)
-                            drawLine(SystemResources.ramHistory, Colors.cyan);
-
-                            // Draw GPU lines (color based on vendor)
-                            if (SystemResources.gpuDetected && SystemResources.gpuCount > 0) {
-                                for (let i = 0; i < SystemResources.gpuCount; i++) {
-                                    if (SystemResources.gpuHistories[i] && SystemResources.gpuHistories[i].length > 0) {
-                                        // Get vendor-specific color
-                                        const vendor = SystemResources.gpuVendors[i] || "";
-                                        let color;
-                                        switch (vendor.toLowerCase()) {
-                                        case "nvidia":
-                                            color = Colors.green;
-                                            break;
-                                        case "amd":
-                                            color = Colors.red;
-                                            break;
-                                        case "intel":
-                                            color = Colors.blue;
-                                            break;
-                                        default:
-                                            color = Colors.magenta;
-                                            break;
-                                        }
-                                        drawLine(SystemResources.gpuHistories[i], color);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Controls panel
-            StyledRect {
-                Layout.fillWidth: true
-                Layout.preferredHeight: 48
-                radius: Styling.radius(4)
-                variant: "pane"
-
-                StyledRect {
-                    anchors.fill: parent
-                    anchors.margins: 4
-                    radius: Styling.radius(0)
-                    variant: "internalbg"
-
-                    // Controls at right
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.margins: 4
+                    Column {
+                        id: list
+                        width: parent.width
                         spacing: 8
 
-                        // Zoom out icon
-                        Rectangle {
-                            Layout.preferredWidth: 32
-                            Layout.preferredHeight: 32
-                            color: "transparent"
+                        Repeater {
+                            model: root.services
 
-                            Text {
-                                anchors.centerIn: parent
-                                text: Icons.glassMinus
-                                font.family: Icons.font
-                                font.pixelSize: 18
-                                color: Colors.overBackground
-                            }
-                        }
+                            StyledRect {
+                                width: parent.width
+                                height: 64
+                                radius: Styling.radius(4)
+                                variant: "pane"
+                                required property var modelData
 
-                        // Zoom slider
-                        StyledSlider {
-                            Layout.fillWidth: true
-                            Layout.preferredHeight: parent.height
-                            vertical: false
-                            value: (root.chartZoom - 0.2) / 2.8  // Map 0.2-3.0 to 0-1
-                            progressColor: Styling.srItem("overprimary")
-                            backgroundColor: Colors.surface
-                            tooltipText: root.chartZoom ? `${root.chartZoom.toFixed(1)}×` : "1.0×"
-                            thickness: 3
-                            handleSpacing: 2
-                            wavy: false
-                            icon: ""
-                            iconPos: "start"
-                            stepSize: 0.1
-                            snapMode: "always"
-                            onValueChanged: {
-                                const newZoom = 0.2 + (value * 2.8);  // Map 0-1 to 0.2-3.0
-                                root.chartZoom = newZoom;
-                                StateService.set("metricsChartZoom", newZoom);
-                            }
-                        }
+                                RowLayout {
+                                    anchors.fill: parent
+                                    anchors.margins: 8
+                                    spacing: 8
 
-                        // Zoom in icon
-                        Rectangle {
-                            Layout.preferredWidth: 32
-                            Layout.preferredHeight: 32
-                            color: "transparent"
+                                    // Левая часть
+                                    RowLayout {
+                                        Layout.fillWidth: true
 
-                            Text {
-                                anchors.centerIn: parent
-                                text: Icons.glassPlus
-                                font.family: Icons.font
-                                font.pixelSize: 18
-                                color: Colors.overBackground
-                            }
-                        }
+                                        Text {
+                                            text: {
+                                                const s = root.serviceStates[modelData.name];
+                                                if (s === "active") return Icons.check;
+                                                if (s === "inactive") return Icons.pause;
+                                                if (s === "failed") return Icons.error;
+                                                return Icons.help;
+                                            }
+                                            font.family: Icons.font
+                                            color: Colors.overBackground
+                                        }
 
-                        // Separator
-                        Separator {
-                            Layout.fillHeight: true
-                            Layout.preferredWidth: 2
-                            Layout.topMargin: 4
-                            Layout.bottomMargin: 4
-                            vert: true
-                        }
+                                        Text {
+                                            text: modelData.label
+                                            color: Colors.overBackground
+                                        }                                        
+                                    }
 
-                        // Decrease interval button
-                        StyledRect {
-                            id: decreaseIntervalBtn
-                            Layout.preferredWidth: 32
-                            Layout.preferredHeight: 32
-                            radius: Styling.radius(-4)
-                            variant: decreaseIntervalMa.containsMouse ? "focus" : "pane"
+                                    // Кнопки
+                                    RowLayout {
+                                        spacing: 4
 
-                            Text {
-                                anchors.centerIn: parent
-                                text: Icons.minus
-                                font.family: Icons.font
-                                font.pixelSize: 18
-                                color: Colors.overBackground
-                            }
+                                        ServiceButton {
+                                            icon: Icons.play
+                                            onClicked: runService(services.name, "start")
+                                        }
 
-                            MouseArea {
-                                id: decreaseIntervalMa
-                                anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                hoverEnabled: true
-                                onClicked: {
-                                    const newInterval = Math.max(100, SystemResources.updateInterval - 100);
-                                    SystemResources.updateInterval = newInterval;
-                                    StateService.set("metricsRefreshInterval", newInterval);
-                                }
-                            }
+                                        ServiceButton {
+                                            icon: Icons.stop
+                                            onClicked: runService(services.name, "stop")
+                                        }
 
-                            Behavior on color {
-                                enabled: Config.animDuration > 0
-                                ColorAnimation {
-                                    duration: Config.animDuration
-                                    easing.type: Easing.OutCubic
-                                }
-                            }
-                        }
-
-                        // Interval display
-                        Text {
-                            text: `${SystemResources.updateInterval}ms`
-                            font.family: Config.theme.font
-                            font.pixelSize: Config.theme.fontSize
-                            font.weight: Font.Bold
-                            color: Colors.overBackground
-                        }
-
-                        // Increase interval button
-                        StyledRect {
-                            id: increaseIntervalBtn
-                            Layout.preferredWidth: 32
-                            Layout.preferredHeight: 32
-                            radius: Styling.radius(-4)
-                            variant: increaseIntervalMa.containsMouse ? "focus" : "pane"
-
-                            Text {
-                                anchors.centerIn: parent
-                                text: Icons.plus
-                                font.family: Icons.font
-                                font.pixelSize: 18
-                                color: Colors.overBackground
-                            }
-
-                            MouseArea {
-                                id: increaseIntervalMa
-                                anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                hoverEnabled: true
-                                onClicked: {
-                                    const newInterval = SystemResources.updateInterval + 100;
-                                    SystemResources.updateInterval = newInterval;
-                                    StateService.set("metricsRefreshInterval", newInterval);
-                                }
-                            }
-
-                            Behavior on color {
-                                enabled: Config.animDuration > 0
-                                ColorAnimation {
-                                    duration: Config.animDuration
-                                    easing.type: Easing.OutCubic
+                                        ServiceButton {
+                                            icon: Icons.restart
+                                            onClicked: runService(services.name, "restart")
+                                        }
+                                    }
                                 }
                             }
                         }

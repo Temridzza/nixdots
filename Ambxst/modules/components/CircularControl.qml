@@ -9,6 +9,9 @@ StyledRect {
     backgroundOpacity: showBackground ? -1 : 0
     enableBorder: showBackground
 
+    property real from: 0
+    property real to: 150
+
     property bool showBackground: true
 
     required property string icon
@@ -71,8 +74,12 @@ StyledRect {
                     wasDragging = true;
                     root.draggingChanged(true);
                 }
-                let deltaValue = deltaY / 100.0;
-                let newValue = Math.round(Math.max(0, Math.min(1, dragStartValue + deltaValue)) * 100) / 100;
+                let deltaValue = deltaY * (root.to - root.from) / 100.0;
+                let rawValue = dragStartValue + deltaValue;
+
+                let newValue = Math.max(root.from, Math.min(root.to, rawValue));
+                newValue = Math.round(newValue); // если нужны целые
+
                 root.controlValueChanged(newValue);
             }
         }
@@ -85,12 +92,12 @@ StyledRect {
         }
 
         onWheel: wheel => {
+            let step = (root.to - root.from) / 50; // чувствительность
+
             if (wheel.angleDelta.y > 0) {
-                let newValue = Math.round(Math.min(1, root.value + 0.1) * 100) / 100;
-                root.controlValueChanged(newValue);
+                root.controlValueChanged(Math.min(root.to, root.value + step));
             } else {
-                let newValue = Math.round(Math.max(0, root.value - 0.1) * 100) / 100;
-                root.controlValueChanged(newValue);
+                root.controlValueChanged(Math.max(root.from, root.value - step));
             }
         }
     }
@@ -101,7 +108,8 @@ StyledRect {
         width: 48
         height: 48
 
-        property real angle: root.value * (360 - 2 * root.gapAngle)
+        property real normalizedValue: (root.value - root.from) / (root.to - root.from)
+        property real angle: normalizedValue * (360 - 2 * root.gapAngle)
         property real radius: 16
 
         Canvas {
