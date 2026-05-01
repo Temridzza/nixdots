@@ -20,4 +20,5 @@ with pkgs; [
   kdePackages.qtmultimedia
   kdePackages.qtshadertools
   kdePackages.syntax-highlighting
+  qt6.qtmultimedia
 ]
