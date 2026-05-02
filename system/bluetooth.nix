@@ -8,5 +8,5 @@
   environment.systemPackages = with pkgs; [
     bluez       # Bluetooth стек
     blueman     # GUI Bluetooth
-  ]
+  ];
 }

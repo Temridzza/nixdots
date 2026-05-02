@@ -24,9 +24,9 @@ in
   # =========================================================
   # 📦 Импорты: конфигурация железа + Home Manager
   # =========================================================
-  imports = [
-    ./hardware-configuration.nix
-  ];
+  # imports = [
+  #   ./hardware-configuration.nix
+  # ];
 
   # =========================================================
   # ⚙️ Базовые настройки системы
@@ -98,32 +98,13 @@ in
   # =========================================================
   environment.systemPackages = with pkgs; [
 
-    # --- Базовые CLI утилиты ---
-    bash        # Командная оболочка
-    coreutils   # ls, cp, mv, rm
-    findutils   # find, xargs
-    gawk        # Обработка текста
-    gnused      # Потоковый редактор
-    procps      # ps, top
-    bc          # Консольный калькулятор
-    jq          # Работа с JSON
-    git         # Контроль версий
-    fastfetch   # Информация о системе
-    btop        # Мониторинг ресурсов
-    lsd         # Улучшенный ls
-    fzf         # Интерактивный поиск
-    xdg-user-dirs
-
     # docker
     # docker
     # docker-compose
     # lazydocker
 
     gnome-system-monitor
-    xar
-    udisks
-    unrar
-    zip
+    
     python315
     macchanger
     
@@ -141,19 +122,13 @@ in
     # --- Терминал ---
     kitty       # GPU терминал
 
-    # --- Видео / Графика ---
-    mesa        # OpenGL / Vulkan
-    vulkan-tools# Vulkan диагностика
-    imagemagick # Работа с изображениями
+    
     
 
     # --- Звук ---
     alsa-utils  # ALSA утилиты
     pipewire    # Аудио сервер
     wireplumber # Менеджер PipeWire
-
-    # --- Bluetooth ---
-    
 
     # --- Файлы ---
     thunar # Файловый менеджер
@@ -178,83 +153,15 @@ in
     
     liberation_ttf_v1
 
-    # --- Уведомления ---
-    libnotify               # Backend уведомлений
-    notify notify-client    # CLI уведомления
-
-    # --- Пользовательские приложения ---
-    firefox                 # Браузер
-    telegram-desktop        # Мессенджер
-    qbittorrent             # Торренты
-    spotify                 # Музыка
-    joplin-desktop          # Заметки
-    onlyoffice-desktopeditors # Офис
-    vscode                  # Редактор кода
-    jetbrains-toolbox       # JetBrains IDE
-    ncdu                    # просмотр диска
-    rofi                    # менеджер приложений
-    obs-studio              # запись
-    networkmanagerapplet
-
-    sunshine                # подключение vita
-    android-studio          # разработка андроид приложений
-    filezilla               # передача по ftp
-    waydroid                # эмулятор андроид
-
-    # изолированные браузеры firefox
-    (writeShellScriptBin "firefox-fj" ''
-      mkdir -p $HOME/.firefox-fj
-      exec firejail \
-        --private=$HOME/.firefox-fj \
-        --profile=${firefoxFirejailProfile} \
-        ${pkgs.firefox}/bin/firefox "$@"
-    '')
-
-    # --- Прочее ---
-    wallust                 # Генерация цветовых схем
-    brightnessctl           # Яркость
-    yad                     # GUI диалоги из shell
-    polkit                  # Управление правами
-    kdePackages.polkit-kde-agent-1
-
+    
     openssl
     ags
 
     opensnitch              #управление трафиком
     opensnitch-ui
-
-    wget
-    curl
-    p7zip
+    
     cabextract
     winetricks
-    hyprland-qtutils
-
-    # --- Программирование ---
-    gcc
-    cmake
-    pkg-config
-
-    qt6.qtbase
-    qt5.qtbase
-
-    libsForQt5.qt5.qtbase
-    libsForQt5.qt5.qtmultimedia
-    libsForQt5.qt5.qtconnectivity
-
-    libsForQt5.qtbase
-    libsForQt5.qtmultimedia
-    libsForQt5.qtconnectivity
-
-    qt5.qtmultimedia
-    qt6.qtmultimedia
-    qt5.qtconnectivity
-    qt6.qtdeclarative
-    
-    curl
-    gtest
-    qt6.qttools
-    qtcreator
 
     # для bydpi
     gnumake
@@ -274,7 +181,7 @@ in
     spice-gtk
     cdrkit
     
-    insomnia # альтернатива postman
+    
 
     privoxy  # перенаправление socks5 в http прокси для игр с поддержкой только http прокси (например, steam)
     socat    # сокеты для mpvpaper
@@ -315,57 +222,9 @@ in
     ];
   };
 
-  # =========================================================
-  # 🐚 jb и clion
-  # =========================================================
   
-  programs.nix-ld = {
-    enable = true;
-    libraries = with pkgs; [
-      stdenv.cc.cc
 
-      # базовые
-      zlib
-      openssl
-      fontconfig
-      freetype
-      dbus
-
-      # X11 — КРИТИЧНО для AWT / Swing
-      libx11
-      libxext
-      libxrender
-      libxcursor
-      libxrandr
-      libXinerama
-      libXi
-      libXtst
-      libXfixes
-      libXdamage
-      libXcomposite
-
-      # графика
-      libGL
-      mesa
-
-      # GTK (нужно CLion UI)
-      gtk3
-      glib
-      pango
-      cairo
-      gdk-pixbuf
-
-      # звук (иначе иногда падает)
-      alsa-lib
-      pulseaudio
-
-    ];
-  };
-
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
+  
 
   # =========================================================
   # 🐚 Zsh

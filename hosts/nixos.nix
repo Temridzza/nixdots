@@ -11,6 +11,8 @@
     ../features/gaming.nix
     ../features/media.nix
     ../features/tor.nix
+    ../features/app.nix
+    ../features/dev.nix
 
     ../home/temridzza.nix
   ];

@@ -35,5 +35,6 @@
     hyprlang  #
     waypaper  #
     hyprland-qt-support #
+    hyprland-qtutils
   ];
 }

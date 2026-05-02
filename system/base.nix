@@ -1,3 +1,5 @@
+# system/base.nix
+{ lib, pkgs, ... }:
 {
   system.stateVersion = "25.11"; # Версия NixOS, от которой считается совместимость
 
@@ -28,6 +30,8 @@
     };
   };
 
+  # ==========================================================
+
   services.envfs.enable = true;
 
   time.timeZone = "Europe/Moscow";
@@ -46,4 +50,51 @@
     XCURSOR_THEME = "Bibata-Original-Classic";
     XCURSOR_SIZE = "24";
   };
+
+  environment.systemPackages = with pkgs; [
+
+    # --- Базовые CLI утилиты ---
+    bash        # Командная оболочка
+    coreutils   # ls, cp, mv, rm
+    findutils   # find, xargs
+    gawk        # Обработка текста
+    gnused      # Потоковый редактор
+    procps      # ps, top
+    bc          # Консольный калькулятор
+    jq          # Работа с JSON
+    git         # Контроль версий
+    fastfetch   # Информация о системе
+    btop        # Мониторинг ресурсов
+    lsd         # Улучшенный ls
+    fzf         # Интерактивный поиск
+    xdg-user-dirs
+    xar
+    udisks
+    unrar
+    zip
+    curl
+    p7zip
+    wget
+
+    # --- Видео / Графика ---
+    mesa        # OpenGL / Vulkan
+    vulkan-tools# Vulkan диагностика
+    imagemagick # Работа с изображениями
+
+    # --- Прочее ---
+    wallust                 # Генерация цветовых схем
+    brightnessctl           # Яркость
+    yad                     # GUI диалоги из shell
+    polkit                  # Управление правами
+    kdePackages.polkit-kde-agent-1
+
+    # --- Уведомления ---
+    libnotify               # Backend уведомлений
+    notify notify-client    # CLI уведомления
+  ];
+
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 }
