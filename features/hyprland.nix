@@ -1,5 +1,5 @@
+# features/hyprland.nix
 { pkgs, inputs, ... }:
-
 {
   programs.hyprland = {
     enable = true;
@@ -35,6 +35,5 @@
     hyprlang  #
     waypaper  #
     hyprland-qt-support #
-
   ];
 }

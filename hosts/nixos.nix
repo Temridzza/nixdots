@@ -8,8 +8,10 @@
 
     ../features/hyprland.nix
     # ../features/dev.nix
-    # ../features/gaming.nix
-    # ../features/media.nix
-    # ../features/tor.nix
+    ../features/gaming.nix
+    ../features/media.nix
+    ../features/tor.nix
+
+    ../home/temridzza.nix
   ];
 }

@@ -111,13 +111,6 @@ in
   # Intel GPU
   services.xserver.videoDrivers = [ "modesetting" ];
 
-  # Steam
-  programs.steam = {
-    enable = true;
-    remotePlay.openFirewall = true;
-    dedicatedServer.openFirewall = true;
-  };
-
   services.envfs.enable = true; # Совместимость с FHS путями
 
   # =========================================================
@@ -256,10 +249,8 @@ in
     # docker-compose
     # lazydocker
 
-    obfs4
     gnome-system-monitor
     xar
-    cava
     udisks
     unrar
     zip
@@ -283,16 +274,11 @@ in
     # --- Видео / Графика ---
     mesa        # OpenGL / Vulkan
     vulkan-tools# Vulkan диагностика
-    ffmpeg      # Работа с видео/аудио
     imagemagick # Работа с изображениями
-    mpv         # медиаплеер
-    mpvScripts.mpris  # MPRIS скрипт для mpv
-    obs-studio  # Запись экрана
+    
 
     # --- Звук ---
     alsa-utils  # ALSA утилиты
-    pavucontrol # GUI микшер
-    pamixer     # CLI микшер
     pipewire    # Аудио сервер
     wireplumber # Менеджер PipeWire
 
@@ -336,14 +322,10 @@ in
     onlyoffice-desktopeditors # Офис
     vscode                  # Редактор кода
     jetbrains-toolbox       # JetBrains IDE
-    steam
     ncdu                    # просмотр диска
     rofi                    # менеджер приложений
     obs-studio              # запись
     networkmanagerapplet
-
-    steam
-    gamescope               # steam оболочка
 
     sunshine                # подключение vita
     android-studio          # разработка андроид приложений
@@ -366,16 +348,12 @@ in
     polkit                  # Управление правами
     kdePackages.polkit-kde-agent-1
 
-    tor                     # обход блокирвок
-    torsocks                # прокидывание трафика через tor
-
     openssl
     ags
 
     opensnitch              #управление трафиком
     opensnitch-ui
 
-    steam-run
     wget
     curl
     p7zip
@@ -537,165 +515,4 @@ in
   # =========================================================
   # 🏠 Home Manager
   # =========================================================
-  
-  home-manager.users.temridzza = { lib, pkgs, ... }: {
-       
-    home.stateVersion = "24.05";
-
-    # extraSpecialArgs = {
-    #   inherit inputs;
-    # };
-
-    wayland.windowManager.hyprland = {
-      enable = true;
-      xwayland.enable = true;
-
-      package = inputs.hyprland.packages.${pkgs.system}.hyprland;
-    };
-
-    # 👉 Симлинк ~/.config/hypr → /etc/nixos/home/temridzza/hypr
-    xdg.configFile."hypr".source = ./home/temridzza/hypr;
-    xdg.configFile = {
-      "cava".source    = ./home/temridzza/config/cava;
-      "waybar".source  = ./home/temridzza/config/waybar;
-      "rofi".source    = ./home/temridzza/config/rofi;
-      "kitty".source   = ./home/temridzza/config/kitty;
-      "wallust".source = ./home/temridzza/config/wallust;
-      "wlogout".source = ./home/temridzza/config/wlogout;
-      "btop".source = ./home/temridzza/config/btop;
-      "fastfetch".source = ./home/temridzza/config/fastfetch;
-      # "swaync".source = ./home/temridzza/config/swaync;
-      "swappy".source = ./home/temridzza/config/swappy;
-    };
-
-    programs.zsh = {
-      enable = true;
-      oh-my-zsh = {
-        enable = true;
-        theme = "half-life";
-        plugins = [ "git" "sudo" "extract" ];
-      };
-
-      # === ПЛАГИНЫ ===
-      autosuggestion.enable = true;
-      syntaxHighlighting.enable = true;
-      historySubstringSearch.enable = true;
-
-      # === АЛИАСЫ (lsd, clear, reload) ===
-      shellAliases = {
-        ls   = "lsd";
-        l    = "ls -l";
-        la   = "ls -a";
-        lla  = "ls -la";
-        lt   = "ls --tree";
-        c    = "clear";
-        reload = "source ~/.zshrc";
-
-        # ✅ Flake-only workflow
-        rebuild = "/etc/nixos/home/temridzza/hypr/myScripts/rebuild-commit.sh";
-        rebuild- = "sudo nixos-rebuild switch --flake /etc/nixos#nixos";
-        update  = "cd /etc/nixos && nix flake update && rebuild";
-
-        # ❌ Блокировка legacy-путей
-        nixos-rebuild = "echo '❌ Use: rebuild (flake-only)'";
-        nix-channel   = "echo '❌ nix-channel is deprecated. Use: update'";
-        nix-env       = "echo '❌ nix-env is deprecated. Use flakes + HM'";
-      };
-
-    };
-
-    # =========================================================
-    # 🚀 Zprofile — автозапуск Hyprland при логине
-    # =========================================================
-    home.file.".zprofile".text = ''
-      # Запускать Hyprland только при логине в TTY
-      if [ -z "$WAYLAND_DISPLAY" ] && [ -z "$DISPLAY" ]; then
-        exec Hyprland
-      fi
-    '';    
-
-    # ------------------
-    home.sessionPath = [
-      "$HOME/.local/bin"
-    ];
-
-    home.file.".local/bin/easyeffects" = {
-      executable = true;
-      text = ''
-        #!/bin/sh
-        exit 0
-      '';
-    };
-
-    programs.mpv = {
-      enable = true;
-      scripts = [
-        pkgs.mpvScripts.mpris
-      ];
-    };
-  };
-
-  home-manager.users.game = { pkgs, ... }: {
-    home.stateVersion = "24.05";
-
-    # =========================================================
-    # 🚀 Zprofile — автозапуск lxqt при логине
-    # =========================================================
-    home.file.".zprofile".text = ''
-      if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
-        exec startx
-      fi
-    '';
-
-    home.file.".xinitrc".text = ''
-      exec startlxqt
-    '';
-  };
-
-  # ------------------ games ------------------
-  # services.displayManager.enable = false;
-  programs.gamemode.enable = true;
-  
-
-
-  services.tor = {
-      enable = true;
-      torsocks.server = "127.0.0.1:9050";
-
-    client = {
-      enable = true;
-      # socksListenAddress = "127.0.0.1:9050";
-      # dnsListenAddress   = "127.0.0.1:9053";
-    };
-
-    settings = {
-      UseBridges = true;
-
-      ClientTransportPlugin = "obfs4 exec ${pkgs.obfs4}/bin/lyrebird";
-
-      Bridge = [
-        "obfs4 195.94.188.201:6191 320F79C08899E6CD339440FD8EF1DA355BC6D38C cert=VZgr2D07/fVl9/bGRtVkBUMHtfVL4QaSYb1Ooa9XRs+DmVEAl/QD3W5QdIF9+jA56OCzFQ iat-mode=0"
-        "obfs4 142.118.112.211:37061 9EFB511A7C025E0A1C428CC84EED1075ACB51BDC cert=WYI8145ldWxmvJveOwHdkcFW58ZdYa1OFImR9KvooI7NQxJmeSivyvzSCMLwx19vrejdTw iat-mode=0"
-        "obfs4 51.83.248.35:25981 D08B4760D128C1A65506577E063D9D26C2A71815 cert=UJWUh+sIDdOKja/byBM2+qP9AFNl86hkGRFJ/lM1GWKP79eCu3PT4WTXI2gdXYULbQ0EMg iat-mode=0"
-        "obfs4 167.235.78.36:40678 C8C01639C3333ED20799C69B149641A6568044BC cert=PWxWCoFmK8B+x8WYbgWmTjfXsmRFjL3P5ptPdvzqks7nzMLroLlXc+wG49hpBlF3UG20bA iat-mode=0"
-        "obfs4 217.60.199.246:443 3710D2FE6F18A66B4319335C46C0105F14D39CAA cert=8p94MAE1WKKSwSnmIIkOUzA0eViCP7BX+ova1+rYnz8WIJ5Oos2BxcMg5Qyke++UUXblVw iat-mode=0"
-        "obfs4 31.57.241.203:443 A6C34604C1298C236A7E365D99E12EB0071CB4B0 cert=ITI6/e9ltNsVIEe+2UD+C9PjyG1OlgO79ufg5dr38PschhZfa3GOBRCYUdX002XcERuiEQ iat-mode=0"      
-        "obfs4 95.217.11.29:22134 9859875C752128125D3179F90BA6351744B09040 cert=W+qSHr6JcFY6UyJiXR3Ec5I5bYHFwDAXNq8HRQU3C56h/aJB8PQqbr8Sq04zKvhEWGbxEw iat-mode=0"        
-        "obfs4 162.55.184.210:29299 122E4025415F19FBD991DFA1B45ACA8A19111D2D cert=bwCGiLb7NnlIC5BbPtEQU2lq73eMtlJbuHY5XHjLkb+yMKiX3hI4N06+qCImamam74FgTQ iat-mode=0"
-      ];
-
-      # AutomapHostsOnResolve = true;
-      # VirtualAddrNetworkIPv4 = "10.192.0.0/10";
-
-      # ControlPort = 9051;
-      # CookieAuthentication = true;
-    };
-  };
-
-  # трансляция медиа по локальной сети ++
-  services.jellyfin = {
-    enable = true;
-    openFirewall = true;
-  };
-  
 }
