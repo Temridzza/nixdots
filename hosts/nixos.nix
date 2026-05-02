@@ -1,3 +1,4 @@
+# hosts/nixos.nix
 {
   imports = [
     # ../system/base.nix
@@ -5,7 +6,7 @@
     ../system/networking.nix
     ../system/users.nix
 
-    # ../features/hyprland.nix
+    ../features/hyprland.nix
     # ../features/dev.nix
     # ../features/gaming.nix
     # ../features/media.nix

@@ -41,11 +41,6 @@ in
     ];
   };
 
-  programs.hyprland = {
-    enable = true;
-    package = inputs.hyprland.packages.${pkgs.system}.hyprland;
-  };
-
   services.udisks2.enable = true;
 
 
@@ -116,9 +111,6 @@ in
   # Intel GPU
   services.xserver.videoDrivers = [ "modesetting" ];
 
-  # XWayland (обязательно!)
-  programs.xwayland.enable = true;
-
   # Steam
   programs.steam = {
     enable = true;
@@ -127,13 +119,6 @@ in
   };
 
   services.envfs.enable = true; # Совместимость с FHS путями
-
-  xdg.portal = {
-    enable = true; # Порталы для sandbox приложений
-    # extraPortals = with pkgs; [
-    #   xdg-desktop-portal-hyprland # Портал для Hyprland
-    # ];
-  };
 
   # =========================================================
   # 🎧 Звук: PipeWire
@@ -264,9 +249,6 @@ in
     btop        # Мониторинг ресурсов
     lsd         # Улучшенный ls
     fzf         # Интерактивный поиск
-    slurp
-    grim
-    swappy
     xdg-user-dirs
 
     # docker
@@ -286,29 +268,11 @@ in
     
 
     # --- Wayland / Hyprland ---
-    # hyprland    # Wayland WM
-    wayland     # Протокол отображения
-    wlroots     # Библиотека композиторов
-    wl-clipboard# Буфер обмена Wayland
-    cliphist
-    waybar      # Панель
-    hyprprop    # Инспектор окон
-    swaybg      # Обои
     # swww        # Анимированные обои
-    mpvpaper    # Видео-обои
-    wlogout     # Меню выхода
-    hypridle
-    hyprpolkitagent
     polkit_gnome
-    pyprland
-    hyprlang
-    hyprshot
-    hyprcursor
+
     mesa
-    nwg-displays
-    nwg-look
-    waypaper
-    hyprland-qt-support
+    
     firejail
     iptables
 

@@ -1,3 +1,5 @@
+# system/users.nix
+{ pkgs, ... }:
 {
   users.users = {
     game = {
