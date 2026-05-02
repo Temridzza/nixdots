@@ -253,6 +253,11 @@ QtObject {
     readonly property string magicWand: ""
     readonly property string google: ""
 
+    // my Icons
+    readonly property string restart: ""
+    readonly property string check: accept
+    readonly property string error: alert
+
     // Aliases for missing icons
     readonly property string palette: paintBrush
     readonly property string cornersOut: arrowsOut

@@ -48,6 +48,7 @@ in
 
   services.udisks2.enable = true;
 
+
   # =========================================================
   # ♻️ Nix: автоочистка старых сборок (Garbage Collection)
   # =========================================================
@@ -163,82 +164,14 @@ in
   # =========================================================
   # 🌐 Сеть
   # =========================================================
-  networking = {
-    hostName = "nixos";                 # Имя хоста
-    networkmanager.enable = true;       # Управление сетью
-  };
-
-  networking.firewall.allowedTCPPorts = [
-    80
-    443
-    2222
-    27015
-    27036
-    27037
-    2221
-
-    # Sunshine / Moonlight
-    47984
-    47989
-    47990
-    48010
-
-    # android studio
-    42125
-    41849
-
-    1080 # ByeDPI SOCKS proxy
-
-    30 #sing-box
-    9050
-
-    8118 #privoxy
-  ];
-
-  networking.firewall.allowedUDPPorts = [
-    10400
-    10401
-    27015
-    27036
-    2221
-    
-
-    # Sunshine / Moonlight
-    47998
-    47999
-    48000
-    48010
-
-    # android studio
-    42125
-    41849
-
-    30 #sing-box
-    9050
-
-    8118 #privoxy
-  ];
-
-  # для bydpi по всей home сети 
-  boot.kernel.sysctl = {
-    "net.ipv4.ip_forward" = 1;
-  };
-  networking.nat = {
-    enable = true;
-    externalInterface = "wlp0s20f3";
-  };
-
+  
   # =========================================================
   # 🔒 waydroid
   # =========================================================
 
-  virtualisation.waydroid.enable = true;
+  # virtualisation.waydroid.enable = true;
 
   networking.nftables.enable = false;
-
-  networking.firewall = {
-    enable = true;
-  };
 
   boot.kernelModules = [
     "binder_linux"
@@ -339,6 +272,18 @@ in
     {
       users = [ "temridzza" ];
       commands = [
+        {
+          command = "/run/current-system/sw/bin/systemctl start tor";
+          options = [ "NOPASSWD" ];
+        }
+        {
+          command = "/run/current-system/sw/bin/systemctl stop tor";
+          options = [ "NOPASSWD" ];
+        }
+        {
+          command = "/run/current-system/sw/bin/systemctl restart tor";
+          options = [ "NOPASSWD" ];
+        }
         {
           command = "/run/current-system/sw/bin/systemctl start tor";
           options = [ "NOPASSWD" ];
@@ -883,6 +828,43 @@ in
   services.jellyfin = {
     enable = true;
     openFirewall = true;
+  };
+
+  systemd.services.byedpi = {
+    description = "ByeDPI";
+    documentation = [ "https://github.com/hufrea/byedpi" ];
+
+    wants = [ "network-online.target" ];
+    after = [ "network-online.target" "nss-lookup.target" ];
+
+    wantedBy = [ "multi-user.target" ];
+
+    serviceConfig = {
+      ExecStart = "/home/temridzza/.config/systemd/user/ciadpi ${BYEDPI_OPTIONS}";
+      User = "temridzza";
+
+      # Безопасность
+      NoNewPrivileges = true;
+      PrivateTmp = true;
+      ProtectSystem = "full";
+
+      # Логи
+      StandardOutput = "null";
+      StandardError = "journal";
+
+      # Ограничения
+      LimitNOFILE = 65535;
+
+      TimeoutStopSec = "5s";
+
+      WorkingDirectory = "/home/temridzza";
+    };
+
+    environment = {
+      BYEDPI_OPTIONS = "--split 4 --disorder 2 --tlsrec 4+s";
+      # альтернативный вариант (если захочешь переключать)
+      BYEDPI_OPTIONS1 = "--split 2 --disorder 3 --tlsrec 1+s --max-conn 16384";
+    };
   };
   
 }

@@ -29,6 +29,9 @@
         inherit system;
         modules = [
           ./configuration.nix
+
+          # новая архитектура
+          ./hosts/nixos.nix
           home-manager.nixosModules.home-manager
           inputs.ambxst.nixosModules.default
         ];

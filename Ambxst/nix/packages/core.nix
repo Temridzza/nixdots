@@ -22,7 +22,3 @@ with pkgs; [
   kdePackages.syntax-highlighting
   qt6.qtmultimedia
 ]
-
-nativeBuildInputs = with pkgs; [
-  qt6.wrapQtAppsHook
-];
