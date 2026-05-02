@@ -3,7 +3,7 @@
     # ../system/base.nix
     # ../system/hardware.nix
     ../system/networking.nix
-    # ../system/users.nix
+    ../system/users.nix
 
     # ../features/hyprland.nix
     # ../features/dev.nix

@@ -209,106 +209,10 @@ in
   # =========================================================
   # 👤 Пользователь
   # =========================================================
-  users.users = {
-    game = {
-      isNormalUser = true;
-      shell = pkgs.zsh;
-      extraGroups = [
-        "wheel"          # sudo
-        "networkmanager"# сеть
-        "audio"          # звук
-        "video"          # видео
-        "input"          # устройства ввода
-        "tty"
-        "uinput"
-        "bluetooth"
-        # "docker"
-        "tor"
-      ];
-    };
 
-    temridzza = {
-      isNormalUser = true;
-      shell = pkgs.zsh; # Основная оболочка
+  
 
-      extraGroups = [
-        "wheel"          # sudo
-        "networkmanager"# сеть
-        "audio"          # звук
-        "video"          # видео
-        "input"          # устройства ввода
-        "tty"
-        "uinput"
-        "bluetooth"
-        # "docker"
-        "tor"
-        "libvirtd"
-        "media"        
-      ];
-
-      packages = with pkgs; [
-        tree # Отображение структуры каталогов
-      ];
-    };
-
-    jellyfin = {
-      extraGroups = [ "media" "users" ];
-    };
-
-    # minidlna.extraGroups = [ "media" ];
-  };
-
-  users.groups.media = {};
-
-  systemd.tmpfiles.rules = [
-    # доступ к домашней папке (чтобы можно было "зайти")
-    "d /home/temridzza 0711 temridzza users - -"
-
-    # папка с медиа
-    "d /home/temridzza/Movies 0750 temridzza media - -"
-  ];
-
-  security.sudo.extraRules = [
-    {
-      users = [ "temridzza" ];
-      commands = [
-        {
-          command = "/run/current-system/sw/bin/systemctl start tor";
-          options = [ "NOPASSWD" ];
-        }
-        {
-          command = "/run/current-system/sw/bin/systemctl stop tor";
-          options = [ "NOPASSWD" ];
-        }
-        {
-          command = "/run/current-system/sw/bin/systemctl restart tor";
-          options = [ "NOPASSWD" ];
-        }
-        {
-          command = "/run/current-system/sw/bin/systemctl start tor";
-          options = [ "NOPASSWD" ];
-        }
-        {
-          command = "/run/current-system/sw/bin/systemctl stop tor";
-          options = [ "NOPASSWD" ];
-        }
-        {
-          command = "/run/current-system/sw/bin/systemctl restart tor";
-          options = [ "NOPASSWD" ];
-        }
-      ];
-    }
-  ];
-
-  security.polkit.extraConfig = ''
-    polkit.addRule(function(action, subject) {
-        if (action.id == "org.freedesktop.systemd1.manage-units") {
-            if (subject.user == "temridzza") {
-                return polkit.Result.YES;
-            }
-        }
-    });
-  '';
+  
 
   # =========================================================
   # 🖋️ Шрифты
@@ -828,43 +732,6 @@ in
   services.jellyfin = {
     enable = true;
     openFirewall = true;
-  };
-
-  systemd.services.byedpi = {
-    description = "ByeDPI";
-    documentation = [ "https://github.com/hufrea/byedpi" ];
-
-    wants = [ "network-online.target" ];
-    after = [ "network-online.target" "nss-lookup.target" ];
-
-    wantedBy = [ "multi-user.target" ];
-
-    serviceConfig = {
-      ExecStart = "/home/temridzza/.config/systemd/user/ciadpi ${BYEDPI_OPTIONS}";
-      User = "temridzza";
-
-      # Безопасность
-      NoNewPrivileges = true;
-      PrivateTmp = true;
-      ProtectSystem = "full";
-
-      # Логи
-      StandardOutput = "null";
-      StandardError = "journal";
-
-      # Ограничения
-      LimitNOFILE = 65535;
-
-      TimeoutStopSec = "5s";
-
-      WorkingDirectory = "/home/temridzza";
-    };
-
-    environment = {
-      BYEDPI_OPTIONS = "--split 4 --disorder 2 --tlsrec 4+s";
-      # альтернативный вариант (если захочешь переключать)
-      BYEDPI_OPTIONS1 = "--split 2 --disorder 3 --tlsrec 1+s --max-conn 16384";
-    };
   };
   
 }
