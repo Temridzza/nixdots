@@ -17,18 +17,18 @@
     };
 
     # 👉 Симлинк ~/.config/hypr → /etc/nixos/home/temridzza/hypr
-    xdg.configFile."hypr".source = ././home/temridzza/hypr;
+    xdg.configFile."hypr".source = ./temridzza/hypr;
     xdg.configFile = {
-      "cava".source    = ././home/temridzza/config/cava;
-      "waybar".source  = ./././home/temridzza/config/waybar;
-      "rofi".source    = ././home/temridzza/config/rofi;
-      "kitty".source   = ././home/temridzza/config/kitty;
-      "wallust".source = ././home/temridzza/config/wallust;
-      "wlogout".source = ././home/temridzza/config/wlogout;
-      "btop".source = ././home/temridzza/config/btop;
-      "fastfetch".source = ././home/temridzza/config/fastfetch;
-      # "swaync".source = ././home/temridzza/config/swaync;
-      "swappy".source = ././home/temridzza/config/swappy;
+      "cava".source    = ./temridzza/config/cava;
+      "waybar".source  = ./temridzza/config/waybar;
+      "rofi".source    = ./temridzza/config/rofi;
+      "kitty".source   = ./temridzza/config/kitty;
+      "wallust".source = ./temridzza/config/wallust;
+      "wlogout".source = ./temridzza/config/wlogout;
+      "btop".source = ./temridzza/config/btop;
+      "fastfetch".source = ./temridzza/config/fastfetch;
+      # "swaync".source = ./temridzza/config/swaync;
+      "swappy".source = ./temridzza/config/swappy;
     };
 
     programs.zsh = {

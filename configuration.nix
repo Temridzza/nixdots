@@ -31,53 +31,9 @@ in
   # =========================================================
   # ⚙️ Базовые настройки системы
   # =========================================================
-  system.stateVersion = "25.11"; # Версия NixOS, от которой считается совместимость
-
-  nixpkgs.config = {
-    allowUnfree = true; # Разрешаем проприетарные пакеты
-    allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-      "vscode"              # Microsoft VS Code
-      "telegram-desktop"   # Telegram
-    ];
-  };
 
   services.udisks2.enable = true;
 
-
-  # =========================================================
-  # ♻️ Nix: автоочистка старых сборок (Garbage Collection)
-  # =========================================================
-  nix = {
-    settings = {
-      max-jobs = "auto";
-      cores = 0;
-      http-connections = 50;
-
-      auto-optimise-store = true; # Удаляет дубликаты файлов в /nix/store (экономия места)
-    };
-      
-
-    gc = {
-      automatic = true;                 # Включить автоматический GC
-      dates = "weekly";                 # Запуск раз в неделю
-      options = "--delete-older-than 7d"; # Удалять сборки старше 7 дней
-    };
-  };
-
-  # =========================================================
-  # 🧠 Загрузчик и ядро
-  # =========================================================
-  boot = {
-    loader.systemd-boot.enable = true;      # EFI загрузчик
-    loader.efi.canTouchEfiVariables = true; # Разрешить запись в EFI
-    kernelPackages = pkgs.linuxPackages; # Актуальное ядро Linux
-
-    kernelParams = [
-      "snd-intel-dspcfg.dsp_driver=1" # Фикс аудио для Intel
-    ];
-  };
-
-  hardware.enableRedistributableFirmware = true; # Несвободные firmware
 
   # =========================================================
   # 🖥️ Графика и Wayland
@@ -90,75 +46,13 @@ in
     desktopManager.lxqt.enable = true;
   };
 
-  hardware.opengl = {
-    enable = true;
-    driSupport32Bit = true;
-  };
 
-  # Vulkan
-  hardware.graphics = {
-    enable = true;
-    extraPackages = with pkgs; [
-      intel-media-driver
-      vulkan-loader
-      vulkan-validation-layers
-    ];
-    extraPackages32 = with pkgs; [
-      vulkan-loader
-    ];
-  };
-
-  # Intel GPU
-  services.xserver.videoDrivers = [ "modesetting" ];
-
-  services.envfs.enable = true; # Совместимость с FHS путями
-
-  # =========================================================
-  # 🎧 Звук: PipeWire
-  # =========================================================
-  security.rtkit.enable = true; # Real-time приоритет для аудио
-
-  services.pipewire = {
-    enable = true;                # Аудио/видео сервер
-    alsa.enable = true;           # Поддержка ALSA
-    alsa.support32Bit = true;     # 32-бит звук (игры)
-    pulse.enable = true;          # Совместимость с PulseAudio
-    wireplumber.enable = true;    # Менеджер сессий
-  };
-
-  services.pulseaudio.enable = false; # PulseAudio отключён
 
   # =========================================================
   # 🔵 Bluetooth
   # =========================================================
-  hardware.bluetooth = {
-    enable = true;      # Bluetooth стек
-    powerOnBoot = true; # Включать при старте
-  };
 
   systemd.packages = [ pkgs.bluez ]; # Bluetooth daemon
-  services.blueman.enable = true;    # GUI для Bluetooth
-
-  # =========================================================
-  # 🌐 Сеть
-  # =========================================================
-  
-  # =========================================================
-  # 🔒 waydroid
-  # =========================================================
-
-  # virtualisation.waydroid.enable = true;
-
-  networking.nftables.enable = false;
-
-  boot.kernelModules = [
-    "binder_linux"
-    "ashmem_linux"
-  ];
-
-  boot.extraModprobeConfig = ''
-    options binder_linux devices=binder,hwbinder,vndbinder
-  '';
 
 
   # =========================================================
@@ -167,30 +61,6 @@ in
   programs.firejail = {
     enable = true;
   };
-
-
-  # =========================================================
-  # 🌍 Локализация
-  # =========================================================
-  time.timeZone = "Europe/Moscow"; # Часовой пояс
-
-  i18n = {
-    defaultLocale = "en_US.UTF-8"; # Основная локаль
-    supportedLocales = [
-      "ru_RU.UTF-8/UTF-8"
-      "en_US.UTF-8/UTF-8"
-    ];
-  };
-
-  console.useXkbConfig = true; # Раскладка как в графике
-
-  # =========================================================
-  # 👤 Пользователь
-  # =========================================================
-
-  
-
-  
 
   # =========================================================
   # 🖋️ Шрифты
@@ -283,8 +153,7 @@ in
     wireplumber # Менеджер PipeWire
 
     # --- Bluetooth ---
-    bluez       # Bluetooth стек
-    blueman     # GUI Bluetooth
+    
 
     # --- Файлы ---
     thunar # Файловый менеджер
@@ -502,17 +371,4 @@ in
   # 🐚 Zsh
   # =========================================================
   programs.zsh.enable = true;
-
-  # =========================================================
-  # 🎨 Переменные окружения
-  # =========================================================
-  environment.sessionVariables = {
-    XCURSOR_THEME = "Bibata-Original-Classic"; # Тема курсора
-    XCURSOR_SIZE = "24";                       # Размер курсора
-    LXQT_WINDOW_MANAGER = "openbox";
-  };
-
-  # =========================================================
-  # 🏠 Home Manager
-  # =========================================================
 }
