@@ -1,3 +1,5 @@
+# home/temridzza.nix
+{ pkgs, inputs, ... }:
 {
   home-manager.users.temridzza = { lib, pkgs, ... }: {
        
@@ -15,18 +17,18 @@
     };
 
     # 👉 Симлинк ~/.config/hypr → /etc/nixos/home/temridzza/hypr
-    xdg.configFile."hypr".source = ./home/temridzza/hypr;
+    xdg.configFile."hypr".source = ././home/temridzza/hypr;
     xdg.configFile = {
-      "cava".source    = ./home/temridzza/config/cava;
-      "waybar".source  = ./home/temridzza/config/waybar;
-      "rofi".source    = ./home/temridzza/config/rofi;
-      "kitty".source   = ./home/temridzza/config/kitty;
-      "wallust".source = ./home/temridzza/config/wallust;
-      "wlogout".source = ./home/temridzza/config/wlogout;
-      "btop".source = ./home/temridzza/config/btop;
-      "fastfetch".source = ./home/temridzza/config/fastfetch;
-      # "swaync".source = ./home/temridzza/config/swaync;
-      "swappy".source = ./home/temridzza/config/swappy;
+      "cava".source    = ././home/temridzza/config/cava;
+      "waybar".source  = ./././home/temridzza/config/waybar;
+      "rofi".source    = ././home/temridzza/config/rofi;
+      "kitty".source   = ././home/temridzza/config/kitty;
+      "wallust".source = ././home/temridzza/config/wallust;
+      "wlogout".source = ././home/temridzza/config/wlogout;
+      "btop".source = ././home/temridzza/config/btop;
+      "fastfetch".source = ././home/temridzza/config/fastfetch;
+      # "swaync".source = ././home/temridzza/config/swaync;
+      "swappy".source = ././home/temridzza/config/swappy;
     };
 
     programs.zsh = {

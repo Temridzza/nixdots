@@ -1,4 +1,5 @@
 # features/gaming.nix
+{ pkgs, ... }:
 {
   programs.steam = {
     enable = true;

@@ -1,3 +1,5 @@
+#  features/tor.nix
+{ pkgs, ... }:
 {
   services.tor = {
       enable = true;
