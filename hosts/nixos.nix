@@ -13,6 +13,8 @@
     ../features/tor.nix
     ../features/app.nix
     ../features/dev.nix
+    ../features/fonts.nix
+    ../features/theme.nix
 
     ../home/temridzza.nix
   ];

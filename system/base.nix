@@ -75,6 +75,7 @@
     curl
     p7zip
     wget
+    unzip
 
     # --- Видео / Графика ---
     mesa        # OpenGL / Vulkan
@@ -92,9 +93,5 @@
     libnotify               # Backend уведомлений
     notify notify-client    # CLI уведомления
   ];
-
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
+  services.udisks2.enable = true;
 }

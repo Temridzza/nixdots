@@ -9,4 +9,5 @@
     bluez       # Bluetooth стек
     blueman     # GUI Bluetooth
   ];
+  systemd.packages = [ pkgs.bluez ]; # Bluetooth daemon
 }

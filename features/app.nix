@@ -1,5 +1,14 @@
 # system/app.nix
-{ lib, pkgs ... }:
+{ lib, pkgs, ... }:
+let
+    firefoxFirejailProfile = pkgs.writeText "firefox-firejail.profile" ''
+      private-tmp
+      env MOZ_ENABLE_WAYLAND=1
+      caps.drop all
+      disable-mnt
+      machine-id
+  '';
+in
 {
   environment.systemPackages = with pkgs; [
     # --- Пользовательские приложения ---
@@ -20,6 +29,10 @@
     android-studio          # разработка андроид приложений
     filezilla               # передача по ftp
     waydroid                # эмулятор андроид
+    kitty       # GPU терминал
+    thunar # Файловый менеджер
+    xarchiver   # Архиватор
+    file-roller # GNOME архиватор
 
     # изолированные браузеры firefox
     (writeShellScriptBin "firefox-fj" ''

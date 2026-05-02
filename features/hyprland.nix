@@ -13,7 +13,6 @@
   environment.systemPackages = with pkgs; [
     wayland                       # Протокол отображения
     wlroots                       # Библиотека композиторов
-    kitty                         # GPU терминал
     waybar                        # Панель
     rofi  # менеджер приложений
     wl-clipboard  # Буфер обмена Wayland
