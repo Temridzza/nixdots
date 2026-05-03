@@ -15,6 +15,7 @@
     ../features/dev.nix
     ../features/fonts.nix
     ../features/theme.nix
+    ../features/byDpi/default.nix
 
     ../home/temridzza.nix
   ];

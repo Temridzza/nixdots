@@ -41,11 +41,6 @@
 
   hardware.enableRedistributableFirmware = true;
 
-  hardware.opengl = {
-    enable = true;
-    driSupport32Bit = true;
-  };
-
   hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [
