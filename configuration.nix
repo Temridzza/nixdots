@@ -22,8 +22,7 @@
     # lazydocker
       
     # для bydpi
-    gnumake
-    gcc
+    
 
     # для LXQt
     # lxqt.lxqt-session
