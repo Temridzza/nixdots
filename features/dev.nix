@@ -1,5 +1,11 @@
 # features/dev.nix
 { pkgs, ... }:
+ let
+    qt6Full = pkgs.qt6.qtbase.overrideDerivation (old: {
+    # tools = [ "all" ] включает все инструменты Qt6: syncqt, moc, uic и т.д.
+    tools = [ "all" ]; 
+  });
+in
 {
   environment.systemPackages = with pkgs; [
     gcc
@@ -26,6 +32,16 @@
     qt6.qttools
     qtcreator
     # insomnia # альтернатива postman
+
+    python315
+    openssl
+
+    # wine stuff
+    cabextract
+    winetricks
+
+    # Qt
+    qt6Full
   ];
 
   # =========================================================

@@ -24,6 +24,7 @@ in
     rofi                    # менеджер приложений
     obs-studio              # запись
     networkmanagerapplet
+    btop        # Мониторинг ресурсов
 
     sunshine                # подключение vita
     android-studio          # разработка андроид приложений
@@ -42,5 +43,27 @@ in
         --profile=${firefoxFirejailProfile} \
         ${pkgs.firefox}/bin/firefox "$@"
     '')
+
+    gnome-system-monitor
+
+    macchanger
+    ags
   ];
+
+  # =========================================================
+  # 📁 Thunar плагины
+  # =========================================================
+  programs.thunar = {
+    enable = true;
+    plugins = with pkgs.xfce; [
+      exo
+      mousepad
+      thunar-archive-plugin
+      thunar-volman
+      tumbler
+    ];
+  };
+
+  # для ambxst
+  programs.gpu-screen-recorder.enable = true;
 }

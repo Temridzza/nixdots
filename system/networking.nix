@@ -1,4 +1,5 @@
 # system/networking.nix
+{ pkgs, ... }:
 {
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
@@ -66,4 +67,12 @@
   #   "net.ipv4.ip_forward" = 1;
   # };
 
+  environment.systemPackages = with pkgs; [
+    firejail
+    iptables
+  ];
+  
+  programs.firejail = {
+    enable = true;
+  };
 }

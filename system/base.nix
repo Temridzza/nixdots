@@ -3,6 +3,15 @@
 {
   system.stateVersion = "25.11"; # Версия NixOS, от которой считается совместимость
 
+  security.pam.loginLimits = [
+    { domain = "*"; type = "soft"; item = "memlock"; value = "unlimited"; }
+    { domain = "*"; type = "hard"; item = "memlock"; value = "unlimited"; }
+  ];
+
+  systemd.user.extraConfig = ''
+    DefaultLimitMEMLOCK=infinity
+  '';
+
   nixpkgs.config = {
     allowUnfree = true;
     allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
@@ -64,7 +73,6 @@
     jq          # Работа с JSON
     git         # Контроль версий
     fastfetch   # Информация о системе
-    btop        # Мониторинг ресурсов
     lsd         # Улучшенный ls
     fzf         # Интерактивный поиск
     xdg-user-dirs
@@ -92,6 +100,15 @@
     # --- Уведомления ---
     libnotify               # Backend уведомлений
     notify notify-client    # CLI уведомления
+
+    # --- Звук ---
+    alsa-utils  # ALSA утилиты
+    pipewire    # Аудио сервер
+    wireplumber # Менеджер PipeWire
+    socat    # сокеты для mpvpaper
+
+    polkit_gnome
   ];
   services.udisks2.enable = true;
+  programs.zsh.enable = true;
 }
