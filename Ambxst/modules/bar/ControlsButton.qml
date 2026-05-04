@@ -109,7 +109,7 @@ Item {
                         return Icons.speakerLow;
                     return Icons.speakerHigh;
                 }
-                sliderValue: (Audio.sink?.audio?.volume ?? 0) * 100
+                sliderValue: (Audio.sink?.audio?.volume ?? 0) * 150
                 progressColor: Audio.sink?.audio?.muted ? Colors.outline : Styling.srItem("overprimary")
                 wavy: true
                 wavyAmplitude: Audio.sink?.audio?.muted ? 0.5 : 1 * normalizedValue()
@@ -146,7 +146,7 @@ Item {
                 Layout.rightMargin: 8
 
                 icon: Audio.source?.audio?.muted ? Icons.micSlash : Icons.mic
-                sliderValue: (Audio.sink?.audio?.volume ?? 0) * 100
+                sliderValue: (Audio.sink?.audio?.volume ?? 0) * 150
                 progressColor: Audio.source?.audio?.muted ? Colors.outline : Styling.srItem("overprimary")
                 wavy: true
                 wavyAmplitude: Audio.source?.audio?.muted ? 0.5 : 1 * normalizedValue()

@@ -111,7 +111,6 @@ Item {
             Layout.preferredHeight: 20
             Layout.alignment: Qt.AlignVCenter
 
-            // 🔥 теперь анимируется нормализованное значение
             property real animatedProgress: root.normalizedValue()
 
             Behavior on animatedProgress {

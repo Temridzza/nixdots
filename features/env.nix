@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-  ambxstWrapped = pkgs.writeShellScriptBin "ambxst" ''
+  ambxstWrapped = pkgs.writeShellScriptBin "/etc/nixos/Ambxst/cli.sh" ''
     export PATH="/run/current-system/sw/bin:$PATH"
 
     export QML2_IMPORT_PATH="/run/current-system/sw/lib/qt-6/qml:$QML2_IMPORT_PATH"

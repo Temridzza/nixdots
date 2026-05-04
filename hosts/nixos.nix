@@ -15,7 +15,9 @@
     ../features/dev.nix
     ../features/fonts.nix
     ../features/theme.nix
+
     ../features/byDpi/default.nix
+    ../features/spotify-ns.nix
 
     ../home/temridzza.nix
 
