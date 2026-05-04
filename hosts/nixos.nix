@@ -19,6 +19,6 @@
 
     ../home/temridzza.nix
 
-    ../Ambxst/nix/packages/default.nix
+    ../features/env.nix
   ];
 }

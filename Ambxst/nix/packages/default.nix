@@ -1,5 +1,5 @@
 # Main Ambxst package
-{ pkgs, lib, self, system, quickshell, ambxstLib }:
+{ pkgs, lib, self, system, quickshell, ambxstLib, ... }:
 
 let
   quickshellPkg = quickshell.packages.${system}.default;
