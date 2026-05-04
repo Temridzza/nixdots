@@ -18,5 +18,7 @@
     ../features/byDpi/default.nix
 
     ../home/temridzza.nix
+
+    ../Ambxst/nix/packages/default.nix
   ];
 }

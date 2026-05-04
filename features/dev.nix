@@ -45,6 +45,14 @@ in
     # qt6Full
   ];
 
+  # для ambxst
+  nativeBuildInputs = [ pkgs.qt6.wrapQtAppsHook ];
+
+  buildInputs = with pkgs.qt6; [
+    qtbase
+    qtmultimedia
+  ];
+
   # =========================================================
   # 🐚 jb и clion
   # =========================================================

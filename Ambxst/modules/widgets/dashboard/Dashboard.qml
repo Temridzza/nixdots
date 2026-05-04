@@ -24,7 +24,7 @@ NotchAnimationBehavior {
         property int currentTab: GlobalStates.dashboardCurrentTab
     }
 
-    readonly property var tabModel: [Icons.widgets, Icons.wallpapers, Icons.heartbeat, Icons.assistant, Icons.launch]
+    readonly property var tabModel: [Icons.widgets, Icons.wallpapers, Icons.heartbeat, Icons.assistant]
     readonly property int tabCount: tabModel.length
     readonly property int tabSpacing: 8
 
@@ -459,11 +459,11 @@ NotchAnimationBehavior {
                     z: visible ? 1 : 0
                 }
 
-                TabLoader {
-                    property int index: 4
-                    sourceComponent: quickCommandComponent
-                    z: visible ? 1 : 0
-                }
+                // TabLoader {
+                //     property int index: 4
+                //     sourceComponent: quickCommandComponent
+                //     z: visible ? 1 : 0
+                // }
                 
                 // Helper to access current item for focus
                 property var currentItem: {
@@ -604,9 +604,9 @@ NotchAnimationBehavior {
         WallpapersTab {}
     }
 
-    Component {
+    // Component {
         
-        id: quickCommandComponent
-        CommandTab {}
-    }
+    //     id: quickCommandComponent
+    //     CommandTab {}
+    // }
 }
