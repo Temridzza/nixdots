@@ -1,5 +1,5 @@
 # system/base.nix
-{ lib, pkgs, ... }:
+{ lib, pkgs, self, ... }:
 let
   commit = self.rev or "dirty";
 in 
