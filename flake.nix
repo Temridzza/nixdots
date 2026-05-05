@@ -40,10 +40,21 @@
 
       # ограничение длины
       msg=$(echo "$msg" | cut -c1-60)
+      
+      # 🔥 превращаем в безопасный slug
+      msg=$(echo "$msg" \
+        | tr '[:upper:]' '[:lower:]' \
+        | sed 's/[^a-z0-9]/-/g' \
+        | sed 's/-\+/-/g' \
+        | sed 's/^-//; s/-$//')
 
-      echo "🧠 NixOS label: $msg"
+      date_part=$(date +"%H-%M")
 
-      sudo GIT_LABEL="$msg" nixos-rebuild switch --flake .
+      label="$msg-_$date_part"
+
+      echo "🧠 NixOS label: $label"
+
+      sudo GIT_LABEL="$label" nixos-rebuild switch --flake . --impure
     '';
   in {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {

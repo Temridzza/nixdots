@@ -12,7 +12,6 @@ import qs.modules.widgets.dashboard.controls
 import qs.modules.widgets.dashboard.wallpapers
 import qs.modules.widgets.dashboard.assistant
 import qs.modules.widgets.dashboard.metrics
-import qs.modules.widgets.dashboard.quickCommand
 import qs.config
 
 NotchAnimationBehavior {
@@ -603,10 +602,4 @@ NotchAnimationBehavior {
         id: wallpapersComponent
         WallpapersTab {}
     }
-
-    // Component {
-        
-    //     id: quickCommandComponent
-    //     CommandTab {}
-    // }
 }

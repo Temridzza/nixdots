@@ -39,13 +39,25 @@
     };
   };
   # ограничение сборок
-  boot.loader.systemd-boot.configurationLimit = 10;
+  boot.loader.systemd-boot = {
+    enable = true;
+
+    # убирает лишние пункты/мусор
+    configurationLimit = 10;
+    consoleMode = "max";
+
+    # ❗ убирает редактор ядра в boot menu
+    editor = false;
+  };
+
+  # отключаем лишние “подписи NixOS”
+  system.nixos.tags = [];
   
   # добавление описания сборки прямо из коммита
   system.nixos.label =
     let
       label = builtins.getEnv "GIT_LABEL";
-    in if label == "" then "nixos-manual" else label;
+    in if label == "" then "nixos-manual1" else label;
 
 
   # ==========================================================

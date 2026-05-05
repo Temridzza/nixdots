@@ -56,7 +56,6 @@
 
         # ✅ Flake-only workflow
         rebuild = "/etc/nixos/home/temridzza/hypr/myScripts/rebuild-commit.sh";
-        rebuild- = "sudo nixos-rebuild switch --flake /etc/nixos#nixos";
         update  = "cd /etc/nixos && nix flake update && rebuild";
 
         # ❌ Блокировка legacy-путей

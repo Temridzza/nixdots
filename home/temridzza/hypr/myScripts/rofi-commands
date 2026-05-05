@@ -7,7 +7,7 @@ choice=$(echo -e "$options" | rofi -dmenu -p "Команды:")
 
 case "$choice" in
     "edp-1 on/off")
-        ~/.config/hypr/myScripts/toggle-edp.sh
+        /etc/nixos/features/scripts/toggle-edp.sh
         ;;
     "DLNA Server")
         dlna_options="Start\nStop\nRestart\nStatus"
