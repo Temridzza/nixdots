@@ -1,11 +1,13 @@
 # features/login.nix
-services.greetd = {
-  enable = true;
+{
+  services.greetd = {
+    enable = true;
 
-  settings = {
-    default_session = {
-      user = "temridzza";
-      command = "Hyprland";
+    settings = {
+      default_session = {
+        user = "temridzza";
+        command = "Hyprland";
+      };
     };
   };
-};
+}

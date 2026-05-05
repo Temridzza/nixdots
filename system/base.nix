@@ -1,5 +1,8 @@
 # system/base.nix
 { lib, pkgs, ... }:
+let
+  commit = self.rev or "dirty";
+in 
 {
   system.stateVersion = "25.11"; # Версия NixOS, от которой считается совместимость
 
@@ -38,6 +41,12 @@
       options = "--delete-older-than 7d";
     };
   };
+  # ограничение сборок
+  boot.loader.systemd-boot.configurationLimit = 10;
+  
+  # добавление описания сборки прямо из коммита
+  system.nixos.label = "nixos-${commit}";
+
 
   # ==========================================================
 
