@@ -33,7 +33,7 @@
           inputs.ambxst.nixosModules.default
         ];
         specialArgs = {
-          inherit inputs;
+          inherit inputs self;
         };        
       };
     };
