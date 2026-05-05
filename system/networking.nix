@@ -31,6 +31,8 @@
     9050
 
     8118 #privoxy
+    53
+    443
   ];
 
   networking.firewall.allowedUDPPorts = [
@@ -55,6 +57,8 @@
     9050
 
     8118 #privoxy
+    53
+    443
   ];
 
   networking.nat = {
@@ -62,17 +66,33 @@
     externalInterface = "wlp0s20f3";
   };
 
-  # для bydpi по всей home сети 
-  # boot.kernel.sysctl = {
-  #   "net.ipv4.ip_forward" = 1;
-  # };
-
   environment.systemPackages = with pkgs; [
-    firejail
     iptables
+
+    dig
   ];
   
   programs.firejail = {
     enable = true;
   };
+
+  # services.dnsproxy = {
+  #   enable = true;
+  #   settings = {
+  #     upstream = [ "https://xbox-dns.ru/dns-query" ];
+
+  #     listen-addrs = [ "127.0.0.1" ];
+  #     listen-ports = [ 53 ];
+  #   };
+
+  #   flags = [ "--verbose" ];
+  # };
+
+  # networking.networkmanager.dns = "none";
+  # networking.nameservers = [ "127.0.0.1" ];
+
+  networking.nameservers = [ "192.168.0.1" ];
+
+  #networking.networkmanager.dns = "none";
+  #networking.nameservers = [ "127.0.0.1" ];
 }

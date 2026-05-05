@@ -24,7 +24,13 @@ Rectangle {
 
     property var services: [
         { name: "tor.service", label: "tor" },
+        { name: "byedpi.service", label: "byeDpi"}
     ]
+    property var scripts: [
+        { label: "toggle-edp", command: "/etc/nixos/features/scripts/toggle-edp.sh" },
+    ]
+    property bool scriptsExpanded: false
+
     property int serviceIndex: 0
 
     property var serviceStates: ({})
@@ -682,123 +688,291 @@ Rectangle {
         }
 
        
+        ColumnLayout {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.minimumWidth: 200
+            Layout.alignment: Qt.AlignTop
 
-        Repeater {
-            model: root.services
-            
-            
+            ServiceButton {
+                Layout.alignment: Qt.AlignRight
+                icon: Icons.stop
+                accentColor: Colors.red
+
+                onClicked: {
+                    for (let i = 0; i < root.services.length; i++) {
+                        const svc = root.services[i];
+                        runService(svc.name, "stop");
+                    }
+                }
+            }
+
             StyledRect {
                 variant: "pane"
-                width: parent.width
-                height: 64
+                Layout.fillWidth: true
+                Layout.preferredHeight: 56
                 radius: Styling.radius(6)
-
-                required property var modelData
-
                 color: Colors.surfaceContainer
-
                 border.width: 1
-                border.color: {
-                    state = root.serviceStates[modelData.name] || "unknown";
-                    if (state === "active") return Colors.green;
-                    if (state === "failed") return Colors.error;
-                    return Colors.outlineVariant;
-                }
-
-                Behavior on color { ColorAnimation { duration: 120 } }
-                Behavior on border.color { ColorAnimation { duration: 120 } }
+                border.color: Colors.primary
 
                 MouseArea {
-                    id: hover
                     anchors.fill: parent
-                    hoverEnabled: true
-                }
-
-                // hover elevation
-                Rectangle {
-                    anchors.fill: parent
-                    radius: Styling.radius(6)
-                    color: Colors.surfaceContainerHigh
-                    opacity: hover.containsMouse ? 1 : 0
-
-                    Behavior on opacity { NumberAnimation { duration: 120 } }
+                    onClicked: scriptsExpanded = !scriptsExpanded
                 }
 
                 RowLayout {
                     anchors.fill: parent
                     anchors.margins: 12
-                    spacing: 12
 
-                    // 🔹 Status circle
-                    Rectangle {
-                        width: 32
-                        height: 32
-                        radius: 16
+                    Text {
+                        text: Icons.terminal
+                        font.family: Icons.font
+                        color: Colors.primary
+                    }
 
-                        color: {
-                            state = root.serviceStates[modelData.name] || "unknown";
-                            if (state === "active") return Colors.greenContainer;
-                            if (state === "failed") return Colors.errorContainer;
-                            return Colors.surfaceVariant;
+                    Text {
+                        text: "Scripts"
+                        Layout.fillWidth: true
+                        color: Colors.overSurface
+                    }
+
+                    Text {
+                        text: scriptsExpanded ? Icons.chevronUp : Icons.chevronDown
+                        font.family: Icons.font
+                        color: Colors.overSurface
+                    }
+                }
+            }
+
+            ColumnLayout {
+                Layout.fillWidth: true
+
+                visible: scriptsExpanded
+                opacity: scriptsExpanded ? 1 : 0
+
+                Behavior on opacity {
+                    NumberAnimation { duration: 150 }
+                }
+
+                Repeater {
+                    model: scripts
+
+                    StyledRect {
+                        variant: "pane"
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 64
+
+                        required property var modelData
+
+                        radius: Styling.radius(6)
+                        color: Colors.surfaceContainer
+                        border.width: 1
+                        border.color: Colors.primary
+
+                        MouseArea {
+                            id: hover
+                            anchors.fill: parent
+                            hoverEnabled: true
                         }
 
-                        Text {
-                            anchors.centerIn: parent
-                            text: {
-                                state = root.serviceStates[modelData.name] || "unknown";
-                                if (state === "active") return Icons.check;
-                                if (state === "inactive") return Icons.pause;
-                                if (state === "failed") return Icons.error;
-                                return Icons.help;
+                        // hover elevation (как у сервисов)
+                        Rectangle {
+                            anchors.fill: parent
+                            radius: Styling.radius(6)
+                            color: Colors.surfaceContainerHigh
+                            opacity: hover.containsMouse ? 1 : 0
+
+                            Behavior on opacity {
+                                NumberAnimation { duration: 120 }
                             }
-                            font.family: Icons.font
-                            font.pixelSize: 14
+                        }
+
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 12
+                            spacing: 12
+
+                            // 🔹 icon circle (как status у сервисов)
+                            Rectangle {
+                                width: 32
+                                height: 32
+                                radius: 16
+                                color: Colors.primary
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: Icons.terminal
+                                    font.family: Icons.font
+                                    font.pixelSize: 14
+                                    color: Colors.overprimary
+                                }
+                            }
+
+                            // 🔹 text block
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 2
+
+                                Text {
+                                    text: modelData.label
+                                    font.pixelSize: 14
+                                    color: Colors.overSurface
+                                }
+
+                                Text {
+                                    text: modelData.command
+                                    font.pixelSize: 11
+                                    color: Colors.outline
+                                    elide: Text.ElideRight
+                                }
+                            }
+
+                            // 🔹 spacer (как у сервисов)
+                            Item {
+                                Layout.fillWidth: true
+                            }
+
+                            // 🔹 run button
+                            ServiceButton {
+                                icon: Icons.play
+                                accentColor: Colors.green
+
+                                onClicked: {
+                                    Quickshell.execDetached([
+                                        "sh",
+                                        "-c",
+                                        modelData.command
+                                    ])
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            Repeater {
+                model: root.services
+                
+                StyledRect {
+                    variant: "pane"
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 64
+
+                    radius: Styling.radius(6)
+
+                    required property var modelData
+
+                    color: Colors.surfaceContainer
+
+                    border.width: 1
+                    border.color: {
+                        state = root.serviceStates[modelData.name] || "unknown";
+                        if (state === "active") return Colors.green;
+                        if (state === "failed") return Colors.error;
+                        return Colors.outlineVariant;
+                    }
+
+                    Behavior on color { ColorAnimation { duration: 120 } }
+                    Behavior on border.color { ColorAnimation { duration: 120 } }
+
+                    MouseArea {
+                        id: hover
+                        anchors.fill: parent
+                        hoverEnabled: true
+                    }
+
+                    // hover elevation
+                    Rectangle {
+                        anchors.fill: parent
+                        radius: Styling.radius(6)
+                        color: Colors.surfaceContainerHigh
+                        opacity: hover.containsMouse ? 1 : 0
+
+                        Behavior on opacity { NumberAnimation { duration: 120 } }
+                    }
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.margins: 12
+                        spacing: 12
+
+                        // 🔹 Status circle
+                        Rectangle {
+                            width: 32
+                            height: 32
+                            radius: 16
 
                             color: {
                                 state = root.serviceStates[modelData.name] || "unknown";
-                                if (state === "active") return Colors.overGreenContainer;
-                                if (state === "failed") return Colors.overErrorContainer;
-                                return Colors.overSurfaceVariant;
+                                if (state === "active") return Colors.greenContainer;
+                                if (state === "failed") return Colors.errorContainer;
+                                return Colors.surfaceVariant;
+                            }
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: {
+                                    state = root.serviceStates[modelData.name] || "unknown";
+                                    if (state === "active") return Icons.check;
+                                    if (state === "inactive") return Icons.pause;
+                                    if (state === "failed") return Icons.error;
+                                    return Icons.help;
+                                }
+                                font.family: Icons.font
+                                font.pixelSize: 14
+
+                                color: {
+                                    state = root.serviceStates[modelData.name] || "unknown";
+                                    if (state === "active") return Colors.overGreenContainer;
+                                    if (state === "failed") return Colors.overErrorContainer;
+                                    return Colors.overSurfaceVariant;
+                                }
                             }
                         }
-                    }
 
-                    // 🔹 Text block
-                    ColumnLayout {
-                        Layout.fillWidth: true
-                        spacing: 2
+                        // 🔹 Text block
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            spacing: 2
 
-                        Text {
-                            text: modelData.label
-                            font.pixelSize: 14
-                            color: Colors.overSurface
+                            Text {
+                                text: modelData.label
+                                font.pixelSize: 14
+                                color: Colors.overSurface
+                            }
+
+                            Text {
+                                text: state = root.serviceStates[modelData.name] || "unknown";
+                                font.pixelSize: 11
+                                color: Colors.outline
+                            }
                         }
 
-                        Text {
-                            text: state
-                            font.pixelSize: 11
-                            color: Colors.outline
-                        }
-                    }
-
-                    // 🔹 Buttons
-                    RowLayout {
-                        spacing: 6
-
-                        ServiceButton {
-                            icon: Icons.restart
-                            accentColor: Colors.primary
-                            onClicked: runService(modelData.name, "restart")
+                        Item {
+                            Layout.fillWidth: true
                         }
 
-                        ServiceButton {
-                            icon: Icons.stop
-                            accentColor: Colors.red
-                            onClicked: runService(modelData.name, "stop")
+                        // 🔹 Buttons
+                        RowLayout {
+                            spacing: 6
+
+                            ServiceButton {
+                                icon: Icons.restart
+                                accentColor: Colors.primary
+                                onClicked: runService(modelData.name, "restart")
+                            }
+
+                            ServiceButton {
+                                icon: Icons.stop
+                                accentColor: Colors.red
+                                onClicked: runService(modelData.name, "stop")
+                            }
                         }
                     }
                 }
             }
         }
+        
     }
 }
