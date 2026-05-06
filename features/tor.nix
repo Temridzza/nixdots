@@ -35,6 +35,8 @@
     };
   };
 
+  systemd.services.tor.wantedBy = lib.mkForce [];
+
   environment.systemPackages = with pkgs; [
     tor # обход блокирвок
     torsocks  # прокидывание трафика через tor

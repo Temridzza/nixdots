@@ -41,4 +41,5 @@ in
       TimeoutStopSec = "5s";
     };
   };
+  systemd.services.byedpi.wantedBy = lib.mkForce [];
 }

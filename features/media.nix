@@ -5,6 +5,7 @@
     enable = true;
     openFirewall = true;
   };
+  systemd.services.jellyfin.wantedBy = lib.mkForce [];
 
   environment.systemPackages = with pkgs; [
     mpv # медиаплеер
