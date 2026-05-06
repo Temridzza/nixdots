@@ -61,6 +61,7 @@
       inherit system;
       modules = [
         ./hosts/nixos.nix
+        ./configuration.nix
         home-manager.nixosModules.home-manager
         inputs.ambxst.nixosModules.default
       ];

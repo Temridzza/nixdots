@@ -55,7 +55,7 @@
         reload = "source ~/.zshrc";
 
         # ✅ Flake-only workflow
-        rebuild = "/etc/nixos/home/temridzza/hypr/myScripts/rebuild-commit.sh";
+        rebuild = "/etc/nixos/features/scripts/rebuild-commit.sh";
         update  = "cd /etc/nixos && nix flake update && rebuild";
 
         # ❌ Блокировка legacy-путей

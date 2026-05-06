@@ -3,13 +3,13 @@
     # =========================================================
   # 🖥️ Графика и Wayland
   # =========================================================
-  # services.xserver = {
-  #   enable = true;
+  services.xserver = {
+    enable = true;
 
-  #   displayManager.startx.enable = true;
+    displayManager.startx.enable = true;
 
-  #   desktopManager.lxqt.enable = true;
-  # };
+    desktopManager.lxqt.enable = true;
+  };
 
   # =========================================================
   # 🧰 Системные пакеты (с комментариями)
@@ -25,10 +25,10 @@
     
 
     # для LXQt
-    # lxqt.lxqt-session
-    # xinit
-    # xorgserver
-    # openbox
+    lxqt.lxqt-session
+    xinit
+    xorgserver
+    openbox
 
     # # виртуализация с аппартаной поддержкой
     # qemu

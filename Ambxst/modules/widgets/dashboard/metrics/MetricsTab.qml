@@ -24,7 +24,8 @@ Rectangle {
 
     property var services: [
         { name: "tor.service", label: "tor" },
-        { name: "byedpi.service", label: "byeDpi"}
+        { name: "byedpi.service", label: "byeDpi"},
+        { name: "jellyfin.service", label: "jellyfin" },
     ]
     property var scripts: [
         { label: "toggle-edp", command: "/etc/nixos/features/scripts/toggle-edp.sh" },
