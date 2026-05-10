@@ -49,6 +49,14 @@ in
     macchanger
     ags
   ];
+  programs.gamemode = {
+    enable = true;
+    enableRenice = true;
+  };
+  powerManagement = {
+    enable = true;
+    cpuFreqGovernor = "schedutil";
+  };
 
   # =========================================================
   # 📁 Thunar плагины

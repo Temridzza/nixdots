@@ -22,13 +22,11 @@ in
     description = "ByeDPI";
     documentation = [ "https://github.com/hufrea/byedpi" ];
 
-    wantedBy = [ "multi-user.target" ];
-
     wants = [ "network-online.target" ];
     after = [ "network-online.target" "nss-lookup.target" ];
 
     serviceConfig = {
-      ExecStart = "${ciadpi}/bin/ciadpi --split 2 --disorder 3 --tlsrec 1+s --max-conn 16384";
+      ExecStart = "${ciadpi}/bin/ciadpi --split 2+s --disorder 2 --fake 1 --ttl 5 --tlsrec 1+s --oob 1 --md5sig --max-conn 16384";
 
       NoNewPrivileges = true;
       PrivateTmp = true;
@@ -41,5 +39,4 @@ in
       TimeoutStopSec = "5s";
     };
   };
-  systemd.services.byedpi.wantedBy = lib.mkForce [];
 }

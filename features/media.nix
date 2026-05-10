@@ -1,5 +1,5 @@
 # features/media.nix
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   services.jellyfin = {
     enable = true;
