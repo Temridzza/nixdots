@@ -11,10 +11,18 @@ in
     gcc
     gnumake
     cmake
+    ninja
     pkg-config
 
     qt6.qtbase
     qt5.qtbase
+    qt6.qtsvg
+    qt6.qtwayland
+    qt6.qtimageformats
+    kdePackages.qtmultimedia
+    kdePackages.qtshadertools
+    kdePackages.syntax-highlighting
+    qt6.qtmultimedia
 
     libsForQt5.qt5.qtbase
     libsForQt5.qt5.qtmultimedia
@@ -25,7 +33,6 @@ in
     libsForQt5.qtconnectivity
 
     qt5.qtmultimedia
-    qt6.qtmultimedia
     qt5.qtconnectivity
     qt6.qtdeclarative
     

@@ -55,7 +55,7 @@ in
   };
   powerManagement = {
     enable = true;
-    cpuFreqGovernor = "schedutil";
+    cpuFreqGovernor = "performance";
   };
 
   # =========================================================

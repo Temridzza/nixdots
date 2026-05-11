@@ -74,5 +74,26 @@
       type = "app";
       program = toString switchScript;
     };
+
+    devShells.${system}.default = pkgs.mkShell {
+      packages = with pkgs; [
+        cmake
+        ninja
+        gcc
+        gdb
+        pkg-config
+
+        qt6.qtbase
+        qt6.qttools
+        qt6.qtwayland
+
+        curl
+        gtest
+    ];
+
+      shellHook = ''
+        export QT_QPA_PLATFORM=wayland
+      '';
+    };
   };
 }
