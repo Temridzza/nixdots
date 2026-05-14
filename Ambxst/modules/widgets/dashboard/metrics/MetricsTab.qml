@@ -29,6 +29,8 @@ Rectangle {
     ]
     property var scripts: [
         { label: "toggle-edp", command: "/etc/nixos/features/scripts/toggle-edp.sh" },
+        { label: "run clion", command: "cd ~/jb/CLionProjects/Chat && nix-shell --command \"clion .\"" },
+        
     ]
     property bool scriptsExpanded: false
 
