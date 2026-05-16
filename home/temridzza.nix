@@ -96,21 +96,4 @@
       ];
     };
   };
-
-  home-manager.users.game = { pkgs, ... }: {
-    home.stateVersion = "24.05";
-
-    # =========================================================
-    # 🚀 Zprofile — автозапуск lxqt при логине
-    # =========================================================
-    home.file.".zprofile".text = ''
-      if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
-        exec startx
-      fi
-    '';
-
-    home.file.".xinitrc".text = ''
-      exec startlxqt
-    '';
-  };
 }
