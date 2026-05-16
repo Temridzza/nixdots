@@ -15,15 +15,6 @@
   # 🧰 Системные пакеты (с комментариями)
   # =========================================================
   environment.systemPackages = with pkgs; [
-
-    # docker
-    # docker
-    # docker-compose
-    # lazydocker
-      
-    # для bydpi
-    
-
     # для LXQt
     lxqt.lxqt-session
     xinit
@@ -57,11 +48,5 @@
   # для virtualBox
   # virtualisation.libvirtd.enable = true;
   # programs.virt-manager.enable = true;
-
- 
-
-  # docker
-  # virtualisation.docker.enable = true;
-  # security.polkit.enable = true;
   
 }

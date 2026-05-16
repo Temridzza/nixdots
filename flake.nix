@@ -15,10 +15,17 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # оболочка
     ambxst = {
       url = "path:./Ambxst";
       inputs.nixpkgs.follows = "nixpkgs";
-    };   
+    };
+
+    # модифицированная тема/скрипт для SDDM (дисплейного менеджера)
+    silentSDDM = {
+      url = "github:uiriansan/SilentSDDM";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ self, nixpkgs, home-manager, ambxst, ... }:
@@ -64,6 +71,7 @@
         ./configuration.nix
         home-manager.nixosModules.home-manager
         inputs.ambxst.nixosModules.default
+        inputs.silentSDDM.nixosModules.default
       ];
       specialArgs = {
         inherit inputs self;

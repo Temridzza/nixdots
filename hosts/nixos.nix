@@ -16,6 +16,7 @@
     ../features/fonts.nix
     ../features/theme.nix
     ../features/login.nix
+    # ../features/docker.nix
 
     ../features/byDpi/default.nix
 
