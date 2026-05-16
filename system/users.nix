@@ -2,23 +2,6 @@
 { pkgs, ... }:
 {
   users.users = {
-    game = {
-      isNormalUser = true;
-      shell = pkgs.zsh;
-      extraGroups = [
-        "wheel"          # sudo
-        "networkmanager"# сеть
-        "audio"          # звук
-        "video"          # видео
-        "input"          # устройства ввода
-        "tty"
-        "uinput"
-        "bluetooth"
-        # "docker"
-        "tor"
-      ];
-    };
-
     temridzza = {
       isNormalUser = true;
       shell = pkgs.zsh; # Основная оболочка
