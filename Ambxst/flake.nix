@@ -17,7 +17,7 @@
       nixosModules.default = { pkgs, lib, ... }: {
         imports = [ ./nix/modules ];
         programs.ambxst.enable = lib.mkDefault true;
-        programs.ambxst.package = lib.mkDefault self.packages.${pkgs.system}.default;
+        programs.ambxst.package = lib.mkDefault self.packages.${pkgs.stdenv.hostPlatform.system}.default;
       };
 
       packages = ambxstLib.forAllSystems (system:
@@ -41,7 +41,7 @@
       devShells = ambxstLib.forAllSystems (system:
         let
           pkgs = import nixpkgs { inherit system; };
-          Ambxst = self.packages.${system}.default;
+          Ambxst = self.packages.${pkgs.stdenv.hostPlatform.system}.default;
         in {
           default = pkgs.mkShell {
             packages = [ Ambxst ];
