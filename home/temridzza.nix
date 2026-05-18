@@ -12,7 +12,7 @@
     wayland.windowManager.hyprland = {
       enable = true;
       xwayland.enable = true;
-
+      configType = "hyprlang";
       package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
     };
 
@@ -21,7 +21,7 @@
     xdg.configFile = {
       "cava".source    = ./temridzza/config/cava;
       "waybar".source  = ./temridzza/config/waybar;
-      "rofi".source    = ./temridzza/config/rofi;
+      # "rofi".source    = ./temridzza/config/rofi;
       "kitty".source   = ./temridzza/config/kitty;
       "wallust".source = ./temridzza/config/wallust;
       "wlogout".source = ./temridzza/config/wlogout;
