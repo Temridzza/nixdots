@@ -9,7 +9,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Фиксация версии 
+    # Фиксация версии
     hyprland = {
       url = "github:hyprwm/Hyprland/v0.52.1";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -21,66 +21,91 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # модифицированная тема/скрипт для SDDM (дисплейного менеджера)
+    # модифицированная тема/скрипт для SDDM
     silentSDDM = {
       url = "github:uiriansan/SilentSDDM";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, ambxst, ... }:
+  outputs = inputs@{
+    self,
+    nixpkgs,
+    home-manager,
+    ambxst,
+    ...
+  }:
   let
     system = "x86_64-linux";
 
-    # git commit прямо в сборку
-    pkgs = import nixpkgs { inherit system; };
-    switchScript = pkgs.writeShellScript "nixos-switch" ''
-      set -e
+    pkgs = import nixpkgs {
+      inherit system;
+    };
 
-      # получаем последний commit message
-      msg=$(git log -1 --pretty=%s 2>/dev/null)
+    mkRebuildScript = mode:
+      pkgs.writeShellScript "nixos-${mode}" ''
+        set -e
 
-      # fallback если не git repo
-      if [ -z "$msg" ]; then
-        msg="manual build"
-      fi
+        # последний git commit
+        msg=$(git log -1 --pretty=%s 2>/dev/null)
 
-      # ограничение длины
-      msg=$(echo "$msg" | cut -c1-60)
-      
-      # 🔥 превращаем в безопасный slug
-      msg=$(echo "$msg" \
-        | tr '[:upper:]' '[:lower:]' \
-        | sed 's/[^a-z0-9]/-/g' \
-        | sed 's/-\+/-/g' \
-        | sed 's/^-//; s/-$//')
+        # fallback если не git repo
+        if [ -z "$msg" ]; then
+          msg="manual build"
+        fi
 
-      date_part=$(date +"%H-%M")
+        # ограничение длины
+        msg=$(echo "$msg" | cut -c1-60)
 
-      label="$msg-_$date_part"
+        # безопасный slug
+        msg=$(echo "$msg" \
+          | tr '[:upper:]' '[:lower:]' \
+          | sed 's/[^a-z0-9]/-/g' \
+          | sed 's/-\+/-/g' \
+          | sed 's/^-//; s/-$//')
 
-      echo "🧠 NixOS label: $label"
+        date_part=$(date +"%H-%M")
 
-      sudo GIT_LABEL="$label" nixos-rebuild switch --flake . --impure
-    '';
+        label="$msg-_$date_part"
+
+        echo "🧠 NixOS label: $label"
+        echo "⚙ Rebuild mode: ${mode}"
+
+        sudo GIT_LABEL="$label" \
+          nixos-rebuild ${mode} --flake . --impure
+      '';
+
+    switchScript = mkRebuildScript "switch";
+    bootScript = mkRebuildScript "boot";
+
   in {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       inherit system;
+
       modules = [
         ./hosts/nixos.nix
         ./configuration.nix
+
         home-manager.nixosModules.home-manager
+
         inputs.ambxst.nixosModules.default
         inputs.silentSDDM.nixosModules.default
       ];
+
       specialArgs = {
         inherit inputs self;
-      };        
+      };
     };
 
-    apps.${system}.switch = {
-      type = "app";
-      program = toString switchScript;
+    apps.${system} = {
+      switch = {
+        type = "app";
+        program = toString switchScript;
+      };
+      boot = {
+        type = "app";
+        program = toString bootScript;
+      };
     };
 
     devShells.${system}.default = pkgs.mkShell {
@@ -97,7 +122,7 @@
 
         curl
         gtest
-    ];
+      ];
 
       shellHook = ''
         export QT_QPA_PLATFORM=wayland
