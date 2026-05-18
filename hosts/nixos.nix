@@ -7,7 +7,7 @@
     ../system/users.nix
     ../system/bluetooth.nix
 
-    ../features/hyprland.nix
+    ../features/hyprland/hyprland.nix
     ../features/gaming.nix
     ../features/media.nix
     ../features/tor.nix
