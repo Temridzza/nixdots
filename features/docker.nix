@@ -6,6 +6,9 @@
     docker
     docker-compose
     lazydocker
+
+    # тестирования API
+    insomnia
   ];
   # docker
   virtualisation.docker.enable = true;

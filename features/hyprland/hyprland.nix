@@ -14,7 +14,6 @@
     wayland                       # Протокол отображения
     wlroots                       # Библиотека композиторов
     waybar                        # Панель
-    rofi  # менеджер приложений
     wl-clipboard  # Буфер обмена Wayland
     cliphist #
     grim  #

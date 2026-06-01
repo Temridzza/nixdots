@@ -13,6 +13,10 @@ in
     cmake
     ninja
     pkg-config
+    gdb
+    clang
+    lldb
+    nlohmann_json
 
     qt6.qtbase
     qt5.qtbase
@@ -35,11 +39,11 @@ in
     qt5.qtmultimedia
     qt5.qtconnectivity
     qt6.qtdeclarative
+    cmark-gfm
     
     gtest
     qt6.qttools
     qtcreator
-    # insomnia # альтернатива postman
 
     python315
     openssl
@@ -48,56 +52,8 @@ in
     cabextract
     winetricks
 
-    # Qt
-    # qt6Full
+    sqlitebrowser # просмотр .db файлов
   ];
-
-  # =========================================================
-  # 🐚 jb и clion
-  # =========================================================
-  
-  programs.nix-ld = {
-    enable = true;
-    libraries = with pkgs; [
-      stdenv.cc.cc
-
-      # базовые
-      zlib
-      openssl
-      fontconfig
-      freetype
-      dbus
-
-      # X11 — КРИТИЧНО для AWT / Swing
-      libx11
-      libxext
-      libxrender
-      libxcursor
-      libxrandr
-      libXinerama
-      libXi
-      libXtst
-      libXfixes
-      libXdamage
-      libXcomposite
-
-      # графика
-      libGL
-      mesa
-
-      # GTK (нужно CLion UI)
-      gtk3
-      glib
-      pango
-      cairo
-      gdk-pixbuf
-
-      # звук (иначе иногда падает)
-      alsa-lib
-      pulseaudio
-
-    ];
-  };
 
 
 }

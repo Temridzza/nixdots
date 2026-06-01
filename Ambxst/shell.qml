@@ -275,4 +275,22 @@ ShellRoot {
             _ = GlobalShortcuts.appId; // Force init
         }
     }
+
+    Loader {
+        id: neuroClientLoader
+        active: SuspendManager.wakeReady
+        source: "modules/neuroclient/NeuroClientPanel.qml" // твоя панель
+    }
+
+    pragma Singleton
+    import QtQuick
+
+    QtObject {
+        id: neuroClientState
+        property bool neuroClientVisible: false
+
+        function toggleNeuroClient() {
+            neuroClientVisible = !neuroClientVisible
+        }
+    }
 }

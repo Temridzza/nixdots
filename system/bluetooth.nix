@@ -1,13 +1,19 @@
 # system/bluetooth.nix
 { pkgs, ... }:
 {
-  hardware.bluetooth.enable = true;
-  hardware.bluetooth.powerOnBoot = true;
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
+
   services.blueman.enable = true;
 
   environment.systemPackages = with pkgs; [
-    bluez       # Bluetooth стек
-    blueman     # GUI Bluetooth
+    blueman
   ];
-  systemd.packages = [ pkgs.bluez ]; # Bluetooth daemon
+
+  systemd.user.services.blueman-applet.serviceConfig.ExecStart = [
+    ""
+    "${pkgs.blueman}/bin/blueman-applet"
+  ];
 }

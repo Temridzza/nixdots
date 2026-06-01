@@ -26,8 +26,9 @@ in
     after = [ "network-online.target" "nss-lookup.target" ];
 
     serviceConfig = {
-      ExecStart = "${ciadpi}/bin/ciadpi --split 2+s --disorder 2 --fake 1 --ttl 5 --tlsrec 1+s --oob 1 --md5sig --max-conn 16384";
-
+      
+      ExecStart = "${ciadpi}/bin/ciadpi -o1 -r-5+se -a1 -At,r,s -d1 -n 'google.com' -Qr -f-1 -a1";
+      
       NoNewPrivileges = true;
       PrivateTmp = true;
       ProtectSystem = "full";

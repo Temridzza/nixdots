@@ -34,6 +34,7 @@ in
     thunar # Файловый менеджер
     xarchiver   # Архиватор
     file-roller # GNOME архиватор
+    rofi  # менеджер приложений
 
     # изолированные браузеры firefox
     (writeShellScriptBin "firefox-fj" ''
@@ -48,6 +49,9 @@ in
 
     macchanger
     ags
+
+    yandex-music
+    yandex-cloud
   ];
   
 

@@ -29,7 +29,7 @@ Rectangle {
     ]
     property var scripts: [
         { label: "toggle-edp", command: "/etc/nixos/features/scripts/toggle-edp.sh" },
-        { label: "run clion", command: "cd ~/jb/CLionProjects/Chat && nix-shell --command \"clion .\"" },
+        { label: "run qtcreator", command: "cd /home/temridzza/Documents/NeuroClient && nix-shell --command 'qtcreator .'" },
         
     ]
     property bool scriptsExpanded: false
@@ -823,12 +823,12 @@ Rectangle {
                                     color: Colors.overSurface
                                 }
 
-                                Text {
-                                    text: modelData.command
-                                    font.pixelSize: 11
-                                    color: Colors.outline
-                                    elide: Text.ElideRight
-                                }
+                                // Text {
+                                //     text: modelData.command
+                                //     font.pixelSize: 11
+                                //     color: Colors.outline
+                                //     elide: Text.ElideRight
+                                // }
                             }
 
                             // 🔹 spacer (как у сервисов)

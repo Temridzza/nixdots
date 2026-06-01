@@ -27,5 +27,9 @@
     terminus_font
     victor-mono
     liberation_ttf_v1
+
+    adwaita-icon-theme
+    gsettings-desktop-schemas
+    hicolor-icon-theme
   ];
 }

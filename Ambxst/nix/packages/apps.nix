@@ -11,10 +11,11 @@ with pkgs; [
 
   # Control panels
   networkmanagerapplet
-  blueman
+  # blueman
   # pwvucontrol
   # easyeffects
   gradia
+
 
   # Icons
   kdePackages.breeze-icons
