@@ -13,61 +13,60 @@ import qs.modules.components
 import qs.config
 import qs.modules.globals
 
-
 PanelWindow {
     id: root
 
-    // ------------------------------------------------------------------
-    // ВХОД: только состояние
-    // ------------------------------------------------------------------
-    property Item anchorItem // может быть null (мы не используем для anchor логики)
     property bool isOpen: NeuroClientState.open
+    property real animatedWidth: 0   // для анимации
 
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.exclusiveZone: -1
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
 
-    // ------------------------------------------------------------------
-    // Геометрия панели (справа как sidebar)
-    // ------------------------------------------------------------------
     anchors {
         top: true
         bottom: true
         right: true
     }
 
-    implicitWidth: isOpen ? 600 : 0
+    // --------------------------------------------------
+    // Target implicitWidth = source of truth
+    // --------------------------------------------------
+    implicitWidth: animatedWidth
+    implicitHeight: parent ? parent.height : 0
 
-    // важно: иначе будет "прыгать"
-    Behavior on implicitWidth {
+    // --------------------------------------------------
+    // Open / Close
+    // --------------------------------------------------
+    Component.onCompleted: animatedWidth = isOpen ? 600 : 0
+    onIsOpenChanged: animatedWidth = isOpen ? 600 : 0
+
+    // --------------------------------------------------
+    // Smooth animation
+    // --------------------------------------------------
+    Behavior on animatedWidth {
         NumberAnimation {
             duration: Config.animDuration
-            easing.type: Easing.OutCubic
+            easing.type: Easing.OutBack
+            easing.overshoot: 1.05
         }
     }
 
-    // ------------------------------------------------------------------
-    // ВНЕШНИЙ ВИД ОКНА
-    // ------------------------------------------------------------------
+    // --------------------------------------------------
+    // UI
+    // --------------------------------------------------
     color: "transparent"
-    visible: true   // PanelWindow ВСЕГДА живёт, мы не убиваем его
+    visible: true
 
-    // ------------------------------------------------------------------
-    // СЛОЙ UI
-    // ------------------------------------------------------------------
     Item {
         id: container
         anchors.fill: parent
+
         opacity: root.isOpen ? 1 : 0
         scale: root.isOpen ? 1 : 0.98
 
-        Behavior on opacity {
-            NumberAnimation { duration: Config.animDuration }
-        }
-
-        Behavior on scale {
-            NumberAnimation { duration: Config.animDuration }
-        }
+        Behavior on opacity { NumberAnimation { duration: Config.animDuration } }
+        Behavior on scale { NumberAnimation { duration: Config.animDuration } }
 
         Item {
             anchors.fill: parent
@@ -81,24 +80,5 @@ PanelWindow {
         }
     }
 
-    // ------------------------------------------------------------------
-    // СИНХРОНИЗАЦИЯ СО STATE (ВАЖНО)
-    // ------------------------------------------------------------------
-    Connections {
-        target: NeuroClientState
-    }
-
-    // ------------------------------------------------------------------
-    // HYPRLAND focus grab (чтобы клики снаружи закрывали)
-    // ------------------------------------------------------------------
-    // HyprlandFocusGrab {
-    //     active: root.isOpen
-    //     windows: [root]
-
-    //     onCleared: {
-    //         if (NeuroClientState.open) {
-    //             NeuroClientState.open = false
-    //         }
-    //     }
-    // }
+    Connections { target: NeuroClientState }
 }
