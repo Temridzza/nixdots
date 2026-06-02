@@ -1,55 +1,118 @@
 pragma ComponentBehavior: Bound
-import Qt5Compat.GraphicalEffects 1.0
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
-import QtQuick.Effects
+
+import QtQuick
+import QtQuick.Layouts
+import Qt5Compat.GraphicalEffects
+
+import Quickshell
+import Quickshell.Wayland
+import Quickshell.Hyprland
+
 import qs.modules.neuroclient
 import qs.modules.theme
+import qs.modules.components
+import qs.config
 
-Item {
-    id: neuroClientPanel
 
-    anchors.top: parent.top
-    anchors.bottom: parent.bottom
-    anchors.right: parent.right
+PanelWindow {
+    id: root
 
-    width: NeuroClientState.open ? 420 : 0
-    opacity: NeuroClientState.open ? 1 : 0
-    z: 10
-    clip: true
+    // ------------------------------------------------------------------
+    // ВХОД: только состояние
+    // ------------------------------------------------------------------
+    property Item anchorItem // может быть null (мы не используем для anchor логики)
+    property bool isOpen: NeuroClientState.open
 
-    Behavior on width { NumberAnimation { duration: 250; easing.type: Easing.OutQuad } }
-    Behavior on opacity { NumberAnimation { duration: 150 } }
+    // ------------------------------------------------------------------
+    // Геометрия панели (справа как sidebar)
+    // ------------------------------------------------------------------
+    anchors {
+        top: true
+        bottom: true
+        right: true
+    }
 
-    Rectangle {
-        id: bg
-        anchors.fill: parent
-        // фон прозрачный
-        color: Qt.rgba(0, 0, 0, 0)
-        layer.enabled: true
-        layer.effect: DropShadow {
-            horizontalOffset: -5
-            verticalOffset: 0
-            radius: 20
-            samples: 16
-            color: Config.colors.shadow // используем цвет тени из theme
+    implicitWidth: isOpen ? 600 : 0
+
+    // важно: иначе будет "прыгать"
+    Behavior on implicitWidth {
+        NumberAnimation {
+            duration: Config.animDuration
+            easing.type: Easing.OutCubic
         }
     }
 
-    Loader {
-        id: mainLoader
+    // ------------------------------------------------------------------
+    // ВНЕШНИЙ ВИД ОКНА
+    // ------------------------------------------------------------------
+    color: "transparent"
+    visible: true   // PanelWindow ВСЕГДА живёт, мы не убиваем его
+
+    // ------------------------------------------------------------------
+    // СЛОЙ UI
+    // ------------------------------------------------------------------
+    Item {
+        id: container
         anchors.fill: parent
-        source: "/home/temridzza/Documents/NeuroClient/qml/Main.qml"
+        opacity: root.isOpen ? 1 : 0
+        scale: root.isOpen ? 1 : 0.98
+
+        Behavior on opacity {
+            NumberAnimation { duration: Config.animDuration }
+        }
+
+        Behavior on scale {
+            NumberAnimation { duration: Config.animDuration }
+        }
+
+        StyledRect {
+            anchors.fill: parent
+            variant: "popup"
+            radius: Styling.radius(10)
+            enableShadow: true
+
+            Item {
+                anchors.fill: parent
+                anchors.margins: 12
+
+                Loader {
+                    anchors.fill: parent
+                    active: root.isOpen
+                    source: "/home/temridzza/Documents/NeuroClient/qml/Main.qml"
+                }
+            }
+        }
     }
 
-    MouseArea {
-        anchors.fill: parent
-        hoverEnabled: true
-        propagateComposedEvents: true
-        onClicked: {
-            if (mouse.x < neuroClientPanel.width) return
-            NeuroClientState.open = false
+    // ------------------------------------------------------------------
+    // СИНХРОНИЗАЦИЯ СО STATE (ВАЖНО)
+    // ------------------------------------------------------------------
+    Connections {
+        target: NeuroClientState
+
+        function onOpenChanged() {
+            console.log("NeuroClientPanel state:", NeuroClientState.open)
         }
+    }
+
+    // ------------------------------------------------------------------
+    // HYPRLAND focus grab (чтобы клики снаружи закрывали)
+    // ------------------------------------------------------------------
+    HyprlandFocusGrab {
+        active: root.isOpen
+        windows: [root]
+
+        onCleared: {
+            if (NeuroClientState.open) {
+                NeuroClientState.open = false
+            }
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // DEBUG
+    // ------------------------------------------------------------------
+    Component.onCompleted: {
+        console.log("NeuroClientPanel initialized")
     }
 }

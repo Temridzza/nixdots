@@ -177,15 +177,6 @@ PanelWindow {
             z: 1
         }
 
-        NeuroClientPanel {
-            anchors.top: parent.top
-            anchors.topMargin: unifiedPanel.barTargetHeight
-            anchors.bottom: parent.bottom
-            anchors.right: parent.right
-
-            width: NeuroClientState.open ? 600 : 0
-        }
-
         BarContent {
             id: barContent
             anchors.fill: parent

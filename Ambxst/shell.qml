@@ -276,9 +276,9 @@ ShellRoot {
         }
     }
 
-    //Loader {
-        //id: neuroClientLoader
-        //active: true
-        //source: "modules/neuroclient/NeuroClientPanel.qml"
-    //}
+    Loader {
+        id: neuroClientLoader
+        active: true
+        source: "modules/neuroclient/NeuroClientPanel.qml"
+    }
 }
