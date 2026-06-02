@@ -276,21 +276,9 @@ ShellRoot {
         }
     }
 
-    Loader {
-        id: neuroClientLoader
-        active: SuspendManager.wakeReady
-        source: "modules/neuroclient/NeuroClientPanel.qml" // твоя панель
-    }
-
-    pragma Singleton
-    import QtQuick
-
-    QtObject {
-        id: neuroClientState
-        property bool neuroClientVisible: false
-
-        function toggleNeuroClient() {
-            neuroClientVisible = !neuroClientVisible
-        }
-    }
+    //Loader {
+        //id: neuroClientLoader
+        //active: true
+        //source: "modules/neuroclient/NeuroClientPanel.qml"
+    //}
 }

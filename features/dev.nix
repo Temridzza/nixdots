@@ -53,6 +53,8 @@ in
     winetricks
 
     sqlitebrowser # просмотр .db файлов
+    kdePackages.qt5compat
+    qt6.qt5compat
   ];
 
 

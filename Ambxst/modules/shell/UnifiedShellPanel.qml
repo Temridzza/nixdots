@@ -12,6 +12,7 @@ import qs.modules.services
 import qs.modules.globals
 import qs.modules.components
 import qs.config
+import qs.modules.neuroclient
 
 PanelWindow {
     id: unifiedPanel
@@ -174,6 +175,15 @@ PanelWindow {
             targetScreen: unifiedPanel.targetScreen
             hasFullscreenWindow: unifiedPanel.hasFullscreenWindow
             z: 1
+        }
+
+        NeuroClientPanel {
+            anchors.top: parent.top
+            anchors.topMargin: unifiedPanel.barTargetHeight
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+
+            width: NeuroClientState.open ? 600 : 0
         }
 
         BarContent {

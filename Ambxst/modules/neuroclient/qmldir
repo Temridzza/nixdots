@@ -1,0 +1,4 @@
+module qs.modules.neuroclient
+
+singleton NeuroClientState 1.0 NeuroClientState.qml
+NeuroClientPanel 1.0 NeuroClientPanel.qml

@@ -156,9 +156,24 @@ run)
 		exit 1
 	}
 	;;
-neuroclient)
-    exec "$HOME/Documents/NeuroClient/cli.sh"
-    ;;
+	neuroclient)
+        PIPE="/tmp/ambxst_ipc.pipe"
+        if [ -p "$PIPE" ]; then
+            echo "neuroclient-toggle" >"$PIPE"
+        else
+            PID=$(find_ambxst_pid_cached)
+            if [ -z "$PID" ]; then
+                echo "Error: Ambxst is not running"
+                exit 1
+            fi
+            qs ipc --pid "$PID" call ambxst run neuroclient-toggle \
+                2>/dev/null || {
+                echo "Error: Could not toggle NeuroClient panel"
+                exit 1
+            }
+        fi
+        ;;
+    neuro) exec "$0" neuroclient ;;
 lock)
 	PID=$(find_ambxst_pid_cached)
 	if [ -z "$PID" ]; then
@@ -496,6 +511,21 @@ help | --help | -h)
 
 	# Launch QuickShell with the main shell.qml
 	# If NIXGL_BIN is set (NixOS/Nix setup), use it. Otherwise, just run qs directly.
+	CLI="${HOME}/Documents/NeuroClient/cli.sh"
+
+	if [ -x "$CLI" ]; then
+		# Запускаем и сохраняем код возврата
+		"$CLI"
+		CLI_RET=$?
+		echo "NeuroClient cli.sh завершился с кодом $CLI_RET"
+	else
+		echo "WARN: $CLI не найден или не является исполняемым"
+	fi
+
+	export QML2_IMPORT_PATH="${HOME}/.local/share/qtqml:${QML2_IMPORT_PATH:-}"
+	export QML_IMPORT_PATH="${QML2_IMPORT_PATH}"
+	"$HOME/Documents/NeuroClient/cli.sh"
+
 	if [ -n "$NIXGL_BIN" ]; then
 		exec "$NIXGL_BIN" "$QS_BIN" -p "${SCRIPT_DIR}/shell.qml"
 	else

@@ -6,6 +6,7 @@ import Quickshell.Hyprland._GlobalShortcuts
 import qs.modules.globals
 import qs.modules.services
 import qs.config
+import qs.modules.neuroclient
 
 import Quickshell.Io
 
@@ -14,6 +15,7 @@ QtObject {
 
     readonly property string appId: "ambxst"
     readonly property string ipcPipe: "/tmp/ambxst_ipc.pipe"
+
 
     // High-performance Pipe Listener (Daemon mode)
     property Process pipeListener: Process {
@@ -71,9 +73,23 @@ QtObject {
                 break;
             case "media-next": MprisController.next(); break;
             case "media-prev": MprisController.previous(); break;
+            case "neuroclient-toggle": toggleNeuroClient(); break;
+
                 
             default: console.warn("Unknown IPC command:", command);
         }
+    }
+
+    property GlobalShortcut shortcutNeuroClient: GlobalShortcut {
+        appid: root.appId
+        name: "neuroclient"
+        description: "Toggle NeuroClient right panel"
+        onPressed: toggleNeuroClient()
+    }
+
+    function toggleNeuroClient() {
+        NeuroClientState.toggle()
+        console.log("NeuroClient visible =", NeuroClientState.visible)
     }
 
     property IpcHandler ipcHandler: IpcHandler {
@@ -334,4 +350,5 @@ QtObject {
             }
         }
     }
+ 
 }

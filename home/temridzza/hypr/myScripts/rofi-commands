@@ -7,7 +7,9 @@ choice=$(echo -e "$options" | rofi -dmenu -p "Команды:")
 
 case "$choice" in
     "edp-1 on/off")
-        /etc/nixos/features/scripts/toggle-edp.sh
+        /etc/nixos/features/scripts/toggle-edp.shfunction toggleNeuroClient() {
+    neuroClientState.neuroClientVisible = !neuroClientState.neuroClientVisible
+}
         ;;
     "DLNA Server")
         dlna_options="Start\nStop\nRestart\nStatus"
