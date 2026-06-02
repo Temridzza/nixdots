@@ -8,6 +8,7 @@ import qs.modules.globals
 import qs.modules.theme
 import qs.modules.widgets.defaultview
 import qs.modules.widgets.dashboard
+import qs.modules.neuroclient
 import qs.modules.widgets.powermenu
 import qs.modules.widgets.tools
 import qs.modules.services
@@ -174,6 +175,14 @@ Item {
     DashboardView {
         id: persistentDashboardView
         visible: false
+    }
+
+    //Loader {
+      //  id: neuroClientLoader
+        //active: true
+        //source: "modules/neuroclient/NeuroClientPanel.qml"
+    //}
+    NeuroClientPanel {
     }
 
     // Persistent power menu view

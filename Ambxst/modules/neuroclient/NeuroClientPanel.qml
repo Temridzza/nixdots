@@ -13,60 +13,68 @@ import qs.modules.components
 import qs.config
 import qs.modules.globals
 
+
 PanelWindow {
     id: root
 
+    // ------------------------------------------------------------------
+    // ВХОД: только состояние
+    // ------------------------------------------------------------------
+    property Item anchorItem
     property bool isOpen: NeuroClientState.open
-    property real animatedWidth: 0   // для анимации
 
-    WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.exclusiveZone: -1
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+    WlrLayershell.layer: isOpen ? WlrLayer.Overlay : WlrLayer.Background
+    WlrLayershell.exclusiveZone: isOpen ? -1 : 0
+    WlrLayershell.keyboardFocus: isOpen
+        ? WlrKeyboardFocus.OnDemand
+        : WlrKeyboardFocus.None
 
+    // ------------------------------------------------------------------
+    // Геометрия панели (справа как sidebar)
+    // ------------------------------------------------------------------
     anchors {
         top: true
         bottom: true
         right: true
     }
 
-    // --------------------------------------------------
-    // Target implicitWidth = source of truth
-    // --------------------------------------------------
-    implicitWidth: animatedWidth
-    implicitHeight: parent ? parent.height : 0
+    margins {
+        top: 20
+    }
 
-    // --------------------------------------------------
-    // Open / Close
-    // --------------------------------------------------
-    Component.onCompleted: animatedWidth = isOpen ? 600 : 0
-    onIsOpenChanged: animatedWidth = isOpen ? 600 : 0
+    implicitWidth: 600
 
-    // --------------------------------------------------
-    // Smooth animation
-    // --------------------------------------------------
-    Behavior on animatedWidth {
+    // важно: иначе будет "прыгать"
+    Behavior on implicitWidth {
         NumberAnimation {
             duration: Config.animDuration
-            easing.type: Easing.OutBack
-            easing.overshoot: 1.05
+            easing.type: Easing.OutCubic
         }
     }
 
-    // --------------------------------------------------
-    // UI
-    // --------------------------------------------------
+    // ------------------------------------------------------------------
+    // ВНЕШНИЙ ВИД ОКНА
+    // ------------------------------------------------------------------
     color: "transparent"
-    visible: true
+    visible: isOpen ? 1 : 0   // PanelWindow ВСЕГДА живёт, мы не убиваем его
 
+    // ------------------------------------------------------------------
+    // СЛОЙ UI
+    // ------------------------------------------------------------------
+    
     Item {
         id: container
         anchors.fill: parent
-
         opacity: root.isOpen ? 1 : 0
         scale: root.isOpen ? 1 : 0.98
 
-        Behavior on opacity { NumberAnimation { duration: Config.animDuration } }
-        Behavior on scale { NumberAnimation { duration: Config.animDuration } }
+        Behavior on opacity {
+            NumberAnimation { duration: Config.animDuration }
+        }
+
+        Behavior on scale {
+            NumberAnimation { duration: Config.animDuration }
+        }
 
         Item {
             anchors.fill: parent
@@ -80,5 +88,24 @@ PanelWindow {
         }
     }
 
-    Connections { target: NeuroClientState }
+    // ------------------------------------------------------------------
+    // СИНХРОНИЗАЦИЯ СО STATE (ВАЖНО)
+    // ------------------------------------------------------------------
+    Connections {
+        target: NeuroClientState
+    }
+
+    // ------------------------------------------------------------------
+    // HYPRLAND focus grab (чтобы клики снаружи закрывали)
+    // ------------------------------------------------------------------
+    // HyprlandFocusGrab {
+    //     active: root.isOpen
+    //     windows: [root]
+
+    //     onCleared: {
+    //         if (NeuroClientState.open) {
+    //             NeuroClientState.open = false
+    //         }
+    //     }
+    // }
 }
