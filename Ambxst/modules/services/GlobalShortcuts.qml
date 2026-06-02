@@ -89,7 +89,7 @@ QtObject {
 
     function toggleNeuroClient() {
         NeuroClientState.toggle()
-        console.log("NeuroClient visible =", NeuroClientState.visible)
+        // console.log("NeuroClient visible =", NeuroClientState.visible)
     }
 
     property IpcHandler ipcHandler: IpcHandler {
