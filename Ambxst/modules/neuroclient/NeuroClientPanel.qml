@@ -3,7 +3,6 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
-
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
@@ -12,6 +11,7 @@ import qs.modules.neuroclient
 import qs.modules.theme
 import qs.modules.components
 import qs.config
+import qs.modules.globals
 
 
 PanelWindow {
@@ -22,6 +22,10 @@ PanelWindow {
     // ------------------------------------------------------------------
     property Item anchorItem // может быть null (мы не используем для anchor логики)
     property bool isOpen: NeuroClientState.open
+
+    WlrLayershell.layer: WlrLayer.Overlay
+    WlrLayershell.exclusiveZone: -1
+    WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
 
     // ------------------------------------------------------------------
     // Геометрия панели (справа как sidebar)
@@ -65,21 +69,14 @@ PanelWindow {
             NumberAnimation { duration: Config.animDuration }
         }
 
-        StyledRect {
+        Item {
             anchors.fill: parent
-            variant: "popup"
-            radius: Styling.radius(10)
-            enableShadow: true
+            anchors.margins: 12
 
-            Item {
+            Loader {
                 anchors.fill: parent
-                anchors.margins: 12
-
-                Loader {
-                    anchors.fill: parent
-                    active: root.isOpen
-                    source: "/home/temridzza/Documents/NeuroClient/qml/Main.qml"
-                }
+                active: root.isOpen
+                source: "/home/temridzza/Documents/NeuroClient/qml/Main.qml"
             }
         }
     }
@@ -89,30 +86,19 @@ PanelWindow {
     // ------------------------------------------------------------------
     Connections {
         target: NeuroClientState
-
-        function onOpenChanged() {
-            console.log("NeuroClientPanel state:", NeuroClientState.open)
-        }
     }
 
     // ------------------------------------------------------------------
     // HYPRLAND focus grab (чтобы клики снаружи закрывали)
     // ------------------------------------------------------------------
-    HyprlandFocusGrab {
-        active: root.isOpen
-        windows: [root]
+    // HyprlandFocusGrab {
+    //     active: root.isOpen
+    //     windows: [root]
 
-        onCleared: {
-            if (NeuroClientState.open) {
-                NeuroClientState.open = false
-            }
-        }
-    }
-
-    // ------------------------------------------------------------------
-    // DEBUG
-    // ------------------------------------------------------------------
-    Component.onCompleted: {
-        console.log("NeuroClientPanel initialized")
-    }
+    //     onCleared: {
+    //         if (NeuroClientState.open) {
+    //             NeuroClientState.open = false
+    //         }
+    //     }
+    // }
 }
