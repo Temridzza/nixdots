@@ -173,7 +173,18 @@ run)
             }
         fi
         ;;
-    neuro) exec "$0" neuroclient ;;
+    neuro)
+    # всё то же окружение, что и при запуске Ambxst
+    export QS_ICON_THEME=$(gsettings get org.gnome.desktop.interface icon-theme | tr -d "'")
+    export QT_QPA_PLATFORMTHEME=qt6ct
+
+    "$HOME/Documents/NeuroClient/cli.sh"
+
+    export QML2_IMPORT_PATH="${HOME}/.local/share/qtqml:${QML2_IMPORT_PATH:-}"
+    export QML_IMPORT_PATH="${QML2_IMPORT_PATH}"
+
+    exec qs -p "$HOME/Documents/NeuroClient/shell.qml "
+    ;;
 lock)
 	PID=$(find_ambxst_pid_cached)
 	if [ -z "$PID" ]; then
