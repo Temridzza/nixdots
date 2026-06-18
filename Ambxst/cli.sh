@@ -183,7 +183,7 @@ run)
     export QML2_IMPORT_PATH="${HOME}/.local/share/qtqml:${QML2_IMPORT_PATH:-}"
     export QML_IMPORT_PATH="${QML2_IMPORT_PATH}"
 
-    exec qs -p "$HOME/Documents/NeuroClient/shell.qml "
+    exec qs -p "$HOME/Documents/NeuroClient/shell.qml"
     ;;
 lock)
 	PID=$(find_ambxst_pid_cached)
@@ -535,7 +535,6 @@ help | --help | -h)
 
 	export QML2_IMPORT_PATH="${HOME}/.local/share/qtqml:${QML2_IMPORT_PATH:-}"
 	export QML_IMPORT_PATH="${QML2_IMPORT_PATH}"
-	"$HOME/Documents/NeuroClient/cli.sh"
 
 	if [ -n "$NIXGL_BIN" ]; then
 		exec "$NIXGL_BIN" "$QS_BIN" -p "${SCRIPT_DIR}/shell.qml"

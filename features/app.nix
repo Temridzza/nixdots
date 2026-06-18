@@ -52,6 +52,8 @@ in
 
     yandex-music
     yandex-cloud
+
+    lmstudio
   ];
   
 

@@ -33,6 +33,8 @@
     8118 #privoxy
     53
     443
+
+    11434 #lmstudio
   ];
 
   networking.firewall.allowedUDPPorts = [
@@ -59,6 +61,8 @@
     8118 #privoxy
     53
     443
+
+    11434 #lmstudio
   ];
 
   networking.nat = {

@@ -15,6 +15,7 @@ in
     pkg-config
     gdb
     clang
+    clazy
     lldb
     nlohmann_json
 

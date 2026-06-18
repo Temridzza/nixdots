@@ -23,7 +23,7 @@ PanelWindow {
     property int leftPanelWidth: 0               // если нужен наружу
 
     // ---------------- layer‑shell (Wayland) ----------
-    WlrLayershell.layer: isOpen ? WlrLayer.Overlay : WlrLayer.Background
+    WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.exclusiveZone: isOpen ? -1 : 0
     WlrLayershell.keyboardFocus: isOpen
         ? WlrKeyboardFocus.OnDemand

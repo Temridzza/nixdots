@@ -21,7 +21,7 @@
     xorgserver
     openbox
 
-    # # виртуализация с аппартаной поддержкой
+    # виртуализация с аппартаной поддержкой
     # qemu
     # virt-manager
     # virt-viewer
