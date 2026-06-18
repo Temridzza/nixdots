@@ -1,0 +1,37 @@
+{
+  "log": {
+    "level": "info"
+  },
+
+  "inbounds": [
+    {
+      "type": "tun",
+      "tag": "tun-in",
+      "interface_name": "tun0",
+
+      "address": [
+        "172.19.0.1/30"
+      ],
+
+      "mtu": 1500,
+      "auto_route": true,
+      "strict_route": true,
+
+      "stack": "system",
+      "endpoint_independent_nat": true
+    }
+  ],
+
+  "outbounds": [
+    {
+      "type": "socks",
+      "tag": "proxy",
+      "server": "192.168.0.120",
+      "server_port": 12334
+    }
+  ],
+
+  "route": {
+    "final": "proxy"
+  }
+}
