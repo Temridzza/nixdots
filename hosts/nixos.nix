@@ -17,7 +17,7 @@
     ../features/theme.nix
     ../features/login.nix
     # ../features/docker.nix
-    ../features/tun2socks/default.nix
+    # ../features/tun2socks/default.nix
 
     ../features/byDpi/default.nix
 

@@ -8,9 +8,9 @@
     { domain = "*"; type = "hard"; item = "memlock"; value = "unlimited"; }
   ];
 
-  systemd.user.extraConfig = ''
-    DefaultLimitMEMLOCK=infinity
-  '';
+  systemd.user.settings.Manager = {
+    DefaultLimitMEMLOCK = "infinity";
+  };
 
   nixpkgs.config = {
     allowUnfree = true;

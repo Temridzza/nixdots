@@ -31,7 +31,7 @@ notify_user() {
 
 # Change brightness
 change_kbd_backlight() {
-	brightnessctl -d *::kbd_backlight set "$1" && get_icon && notify_user
+	brightnessctl -d *::kbd_backlight set "$1" && get_icon #&& notify_user
 }
 
 # Execute accordingly

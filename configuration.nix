@@ -34,6 +34,7 @@
     # privoxy  # перенаправление socks5 в http прокси для игр с поддержкой только http прокси (например, steam)
     
   ];
+  # programs.dconf.enable = true;
 
   # services.privoxy = {
   #   enable = true;
@@ -45,7 +46,7 @@
   #   };
   # };
 
-  # для virtualBox
+  # для virt-manage
   # virtualisation.libvirtd.enable = true;
   # programs.virt-manager.enable = true;
   

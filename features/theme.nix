@@ -16,4 +16,6 @@
     catppuccin-kvantum      # Kvantum тема
     glib                    # База GTK
   ];
+
+  programs.dconf.enable = true;
 }

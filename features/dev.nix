@@ -29,9 +29,9 @@ in
     kdePackages.syntax-highlighting
     qt6.qtmultimedia
 
-    libsForQt5.qt5.qtbase
-    libsForQt5.qt5.qtmultimedia
-    libsForQt5.qt5.qtconnectivity
+    qt5.qtbase
+    qt5.qtmultimedia
+    qt5.qtconnectivity
 
     libsForQt5.qtbase
     libsForQt5.qtmultimedia

@@ -96,6 +96,9 @@
   # networking.nameservers = [ "127.0.0.1" ];
 
   networking.nameservers = [ "192.168.0.1" ];
+#   networking.nameservers = [ "8.8.8.8" "1.1.1.1" ];
+
+# networking.networkmanager.dns = "none";
 
   #networking.networkmanager.dns = "none";
   #networking.nameservers = [ "127.0.0.1" ];
